@@ -1,0 +1,528 @@
+/*
+* @Project  : Helios
+* @Architecture : Kim Bom
+* index.css
+*
+* @Created by KimBom On 2015. 12. 27...
+* @Copyright (C) 2015 KimBom. All rights reserved.
+*/
+@import url(https://fonts.googleapis.com/css?family=Poiret+One);
+
+@import url(https://fonts.googleapis.com/css?family=Titillium+Web:900);
+
+@import
+	url(https://fonts.googleapis.com/css?family=Roboto+Condensed:700italic)
+	;
+
+html, body {
+	background: url('../../image/bkgnd-dot.bmp');
+	height: 95%;
+	width: 1860px;
+}
+.redpoint{
+	background-color: rgba(147,33,22,0.8);
+}
+.left_side {
+	background-color: rgba(255, 255, 255, 0);
+	width: 300px;
+	height: 95%;
+	float: left;
+	position: relative;
+	border-left: 10px double #202526;
+	border-right: 10px double #202526;
+	border-top: 2px solid #202526;
+	border-bottom: 2px solid #202526;
+}
+
+.left_side_1 {
+	background-color: rgba(255, 255, 2, 0);
+	width: 90%;
+	height: 7%;
+	left: 10px;
+	top: -25px;
+	position: relative;
+	border-bottom: 2px solid #A9D6E3;
+	font-size: 40px;
+	color: #B7D3D4;
+	font-family: 'Poiret One', cursive;
+}
+
+.left_side_2 {
+	background-color: rgba(25, 255, 2, 0);
+	width: 90%;
+	height: 7%;
+	left: 10px;
+	top: -10px;
+	position: relative;
+	border-bottom: 1px solid #35464C;
+	border-top: 5px double #35464C;
+	font-size: 15px;
+	color: #567D7F;
+	font-family: 'Roboto Condensed', sans-serif;
+	line-height: 0px;
+}
+
+.left_side_3 {
+	background-color: rgba(25, 100, 2, 0);
+	width: 90%;
+	height: 7%;
+	left: 10px;
+	top: 0px;
+	position: relative;
+	border-bottom: 1px solid #35464C;
+	border-top: 1px solid #35464C;
+	font-size: 15px;
+	color: #567D7F;
+	font-family: 'Roboto Condensed', sans-serif;
+	line-height: 0px;
+}
+.left_side_4 {
+	background-color: rgba(25, 100, 2, 0);
+	width: 90%;
+	height: 7%;
+	left: 10px;
+	top: 20px;
+	position: relative;
+	border-bottom: 1px solid #35464C;
+	border-top: 1px solid #35464C;
+	font-size: 15px;
+	color: #567D7F;
+	font-family: 'Roboto Condensed', sans-serif;
+	line-height: 0px;
+}
+.left_side_5 {
+	background-color: rgba(225, 100, 2, 0);
+	width: 80%;
+	height: 50%;
+	left: 10px;
+	top: 30px;
+	position: relative;
+	border-top: 1px solid #35464C;
+	font-size: 15px;
+	color: #567D7F;
+	font-family: 'Roboto Condensed', sans-serif;
+	line-height: 0px;
+}
+
+body {
+	margin: 30px;
+	font-family: sans-serif;
+}
+
+—————————————————–
+ Tree core styles
+* /
+.tree {
+	margin: 1em;
+}
+
+.tree input {
+	position: absolute;
+	clip: rect(0, 0, 0, 0);
+}
+
+.tree input ~ ul {
+	display: none;
+}
+
+.tree input:checked ~ ul {
+	display: block;
+}
+
+/* ————————————————————–
+ Tree rows
+*/
+.tree li {
+	line-height: 0.5;
+	position: relative;
+	padding: 0 0 0em 0em;
+}
+
+.tree ul li {
+	padding: 1em 0 0 0em;
+}
+
+.tree>li:last-child {
+	padding-bottom: 0;
+}
+
+/* ————————————————————–
+ Tree labels
+*/
+.tree_label {
+	position: relative;
+	display: inline-block;
+	background: rgba(225, 100, 2, 0);
+	color: #456B72;
+}
+
+label.tree_label {
+	cursor: pointer;
+}
+
+label.tree_label:hover {
+	color: #B2EBF4;
+}
+
+/*################################################### */
+.main_side {
+	background-color: rgba(255, 0, 255, 0);
+	width: 1500px;
+	height: 95%;
+	float: left;
+	position: relative;
+}
+.main_up{
+	background-color: rgba(255, 0, 255, 0);
+	width: 1500px;
+	height: 78px;
+	float: left;
+	position: relative;
+	border-bottom: 2px solid #A9D6E3;
+	color:#555555;
+	font-family: 'Titillium Web', sans-serif;
+	font-size:25px;
+	text-align:right;
+}
+.p_div {
+	background-color: rgba(255, 0, 255, 0);
+	width: 1450px;
+	height: 100%;
+	position: absolute;
+	left: 25px;
+	top: 85px;
+	
+}
+
+.p_list {
+	margin: 0px;
+	padding: 0px;
+	width: 100%;
+	border: 1px solid #202526; -moz-border-radius-bottomleft : 0px;
+	-webkit-border-bottom-left-radius: 0px;
+	border-bottom-left-radius: 0px;
+	-moz-border-radius-bottomright: 0px;
+	-webkit-border-bottom-right-radius: 0px;
+	border-bottom-right-radius: 0px;
+	-moz-border-radius-topright: 0px;
+	-webkit-border-top-right-radius: 0px;
+	border-top-right-radius: 0px;
+	-moz-border-radius-topleft: 0px;
+	-webkit-border-top-left-radius: 0px;
+	border-top-left-radius: 0px;
+	-moz-border-radius-bottomleft: 0px;
+}
+
+.p_list table {
+	border-collapse: collapse;
+	border-spacing: 0;
+	width: 100%;
+	height: 20px;
+	margin: 0px;
+	padding: 0px;
+}
+
+.p_list tr:last-child td:last-child {
+	-moz-border-radius-bottomright: 0px;
+	-webkit-border-bottom-right-radius: 0px;
+	border-bottom-right-radius: 0px;
+}
+
+.p_list table tr:first-child td:first-child {
+	-moz-border-radius-topleft: 0px;
+	-webkit-border-top-left-radius: 0px;
+	border-top-left-radius: 0px;
+}
+
+.p_list table tr:first-child td:last-child {
+	-moz-border-radius-topright: 0px;
+	-webkit-border-top-right-radius: 0px;
+	border-top-right-radius: 0px;
+}
+
+.p_list tr:last-child td:first-child {
+	-moz-border-radius-bottomleft: 0px;
+	-webkit-border-bottom-left-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+
+.p_list tr:hover td {
+	
+}
+
+.p_list tr:nth-child(odd) {
+	background-color: rgba(96, 190, 204, 0.05);
+}
+
+.p_list tr:nth-child(even) {
+	background-color: rgba(96, 190, 204, 0.15);
+}
+
+.p_list td {
+	vertical-align: middle;
+	border: 1px solid #202526;
+	border-width: 0px 1px 1px 0px;
+	text-align: left;
+	padding: 8px;
+	font-size: 15px;
+	font-family: 'Arial';
+	font-weight: bold;
+	color:#8CACB2;
+}
+
+.p_list tr:last-child td {
+	border-width: 0px 1px 0px 0px;
+}
+
+.p_list tr td:last-child {
+	border-width: 0px 0px 1px 0px;
+}
+
+.p_list tr:last-child td:last-child {
+	border-width: 0px 0px 0px 0px;
+}
+
+.p_list tr:first-child td {
+	background-color: rgba(96, 190, 204, 0.4);
+	border: 0px solid #202526;
+	text-align: center;
+	border-width: 0px 0px 1px 1px;
+	font-size: 14px;
+	font-family: Arial;
+	font-weight: bold;
+	color: #ffffff;
+}
+
+.p_list tr:first-child:hover td {
+	background-color: rgba(96, 190, 204, 0.8);
+}
+
+.p_list tr:first-child td:first-child {
+	border-width: 0px 0px 1px 0px;
+}
+
+.p_list tr:first-child td:last-child {
+	border-width: 0px 0px 1px 1px;
+}
+
+a:link {
+	text-decoration: none;
+	color: #8CACB2;
+}
+
+a:visited {
+	text-decoration: none;
+	color: #8CACB2;
+}
+
+a:active {
+	text-decoration: none;
+	color: #8CACB2;
+}
+
+a:hover {
+	text-decoration: underline;
+	color: #4374D9;
+}
+/*##############edit box###############*/
+@import url(http://fonts.googleapis.com/css?family=Cabin:400);
+
+.webdesigntuts-workshop {
+	background-color: rgba(255, 255, 255, 0);
+	height: 100%;
+	position: relative;
+	display: inline-block;
+	text-align: center;
+	width: 200px;
+	top: 170px;
+}
+
+.webdesigntuts-workshop:before, .webdesigntuts-workshop:after {
+	content: '';
+	display: block;
+	height: 1px;
+	left: 50%;
+	margin: 0 0 0 -400px;
+	position:relative;
+	width: 200px;
+}
+
+.webdesigntuts-workshop:before {
+	background-color: rgba(255, 255, 255, 0);
+}
+
+.webdesigntuts-workshop:after {
+	background-color: rgba(255, 255, 255, 0);
+}
+
+.webdesigntuts-workshop form {
+	background-color: rgba(255, 255, 255, 0);
+	display: inline-block;
+	font-size: 0px;
+	margin: 150px auto 0;
+	padding: 20px;
+	position: relative;
+	z-index: 1;
+}
+
+.webdesigntuts-workshop input {
+	background-color: rgba(255, 255, 255, 0);
+	border: 1px solid #444;
+	border-radius: 5px 0 0 5px;
+	box-shadow: 0 2px 0 #000;
+	color: #CBFFFE;
+	display: block;
+	float: left;
+	font-family: 'Cabin', helvetica, arial, sans-serif;
+	font-size: 13px;
+	font-weight: 400;
+	height: 40px;
+	margin: 5;
+	padding: 0 10px;
+	text-shadow: 0 -1px 0 #000;
+	width: 190px;
+	position:relative;
+	top:-165px;
+}
+
+.ie .webdesigntuts-workshop input {
+	line-height: 40px;
+}
+
+.webdesigntuts-workshop input::-webkit-input-placeholder {
+	color: #CBFFFE;
+}
+
+.webdesigntuts-workshop input:-moz-placeholder {
+	color: #CBFFFE;
+}
+
+.webdesigntuts-workshop input:focus {
+	-webkit-animation: glow 800ms ease-out infinite alternate;
+	-moz-animation: glow 800ms ease-out infinite alternate;
+	-o-animation: glow 800ms ease-out infinite alternate;
+	-ms-animation: glow 800ms ease-out infinite alternate;
+	animation: glow 800ms ease-out infinite alternate;
+	background-color: rgba(255, 255, 255, 0);
+	box-shadow: 0 0 5px rgba(0, 255, 0, .2), inset 0 0 5px
+		rgba(0, 255, 0, .1), 0 2px 0 #000;
+	color: #efe;
+	outline: none;
+}
+
+.webdesigntuts-workshop input:focus::-webkit-input-placeholder {
+	color: #efe;
+}
+
+.webdesigntuts-workshop input:focus:-moz-placeholder {
+	color: #efe;
+}
+
+.webdesigntuts-workshop button {
+	background: #222;
+	background: -webkit-linear-gradient(#333, #222);
+	background: -moz-linear-gradient(#333, #222);
+	background: -o-linear-gradient(#333, #222);
+	background: -ms-linear-gradient(#333, #222);
+	background: linear-gradient(#333, #222);
+	-webkit-box-sizing: content-box;
+	-moz-box-sizing: content-box;
+	-o-box-sizing: content-box;
+	-ms-box-sizing: content-box;
+	box-sizing: content-box;
+	border: 1px solid #444;
+	border-left-color: #000;
+	border-radius: 0 5px 5px 0;
+	box-shadow: 0 2px 0 #000;
+	color: #CBFFFE;
+	display: block;
+	font-family: 'Cabin', helvetica, arial, sans-serif;
+	font-size: 13px;
+	font-weight: 400;
+	height: 40px;
+	line-height: 40px;
+	margin: 0;
+	padding: 0;
+	position:absolute;
+	text-shadow: 0 -1px 0 #000;
+	width: 60px;
+	top:-100px;
+}
+
+.webdesigntuts-workshop button:hover, .webdesigntuts-workshop button:focus
+	{
+	background: #292929;
+	background: -webkit-linear-gradient(#393939, #292929);
+	background: -moz-linear-gradient(#393939, #292929);
+	background: -o-linear-gradient(#393939, #292929);
+	background: -ms-linear-gradient(#393939, #292929);
+	background: linear-gradient(#393939, #292929);
+	color: #5f5;
+	outline: none;
+}
+
+.webdesigntuts-workshop button:active {
+	background: #292929;
+	background: -webkit-linear-gradient(#393939, #292929);
+	background: -moz-linear-gradient(#393939, #292929);
+	background: -o-linear-gradient(#393939, #292929);
+	background: -ms-linear-gradient(#393939, #292929);
+	background: linear-gradient(#393939, #292929);
+	box-shadow: 0 1px 0 #000, inset 1px 0 1px #222;
+	top: -100px;
+}
+
+@-webkit-keyframes glow {
+    0% {
+		border-color: #FBC100;
+		box-shadow: 0 0 5px rgba(0,255,0,.2), inset 0 0 5px rgba(0,255,0,.1), 0 2px 0 #000;
+    }	
+    100% {
+		border-color: #FFFFFF;
+		box-shadow: 0 0 20px rgba(255,255,0,.6), inset 0 0 10px rgba(255,255,0,.4), 0 2px 0 #FFFFFF;
+    }
+}
+
+@-moz-keyframes glow {
+    0% {
+		border-color: #FBC100;
+		box-shadow: 0 0 5px rgba(0,255,0,.2), inset 0 0 5px rgba(0,255,0,.1), 0 2px 0 #000;
+    }	
+    100% {
+		border-color: #FFFFFF;
+		box-shadow: 0 0 20px rgba(0,255,0,.6), inset 0 0 10px rgba(0,255,0,.4), 0 2px 0 #000;
+    }
+}
+
+@-o-keyframes glow {
+    0% {
+		border-color: #FBC100;
+		box-shadow: 0 0 5px rgba(0,255,0,.2), inset 0 0 5px rgba(0,255,0,.1), 0 2px 0 #000;
+    }	
+    100% {
+		border-color: #FFFFFF;
+		box-shadow: 0 0 20px rgba(0,255,0,.6), inset 0 0 10px rgba(0,255,0,.4), 0 2px 0 #000;
+    }
+}
+
+@-ms-keyframes glow {
+    0% {
+		border-color: #FBC100;
+		box-shadow: 0 0 5px rgba(0,255,0,.2), inset 0 0 5px rgba(0,255,0,.1), 0 2px 0 #000;
+    }	
+    100% {
+		border-color: #FFFFFF;
+		box-shadow: 0 0 20px rgba(0,255,0,.6), inset 0 0 10px rgba(0,255,0,.4), 0 2px 0 #000;
+    }
+}
+
+@keyframes glow {
+    0% {
+		border-color:#FBC100;
+		box-shadow: 0 0 5px rgba(0,255,0,.2), inset 0 0 5px rgba(0,255,0,.1), 0 2px 0 #000;
+    }	
+    100% {
+		border-color: #FFFFFF;
+		box-shadow: 0 0 20px rgba(0,255,0,.6), inset 0 0 10px rgba(0,255,0,.4), 0 2px 0 #000;
+    }
+}

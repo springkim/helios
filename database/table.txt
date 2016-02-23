@@ -1,0 +1,53 @@
+create table userinfo(
+	ui_id varchar(512) primary key,
+	ui_pw varchar(521),
+	ui_name varchar(512),
+	ui_guild varchar(512),
+	ui_phone varchar(512),
+	ui_email varchar(512),
+	ui_photo varchar(512),
+	ui_level int,
+	ui_salt1 varchar(512),
+	ui_salt2 varchar(512)
+);
+create table admin(
+	ui_id varchar(512) references userinfo(ui_id)
+);
+create table superadmin(
+ui_id varchar(512) references userinfo(ui_id)
+);
+create table emblem(
+	eb_name varchar(512) primary key,
+	eb_path varchar(260)
+);
+create table userinfo_emblem(
+	eb_name varchar(512) references emblem(eb_name),
+	ui_id varchar(512) references userinfo(ui_id)
+);
+create table problem(
+	pr_path varchar(260) primary key,
+	pr_title varchar(128),
+	pr_level varchar(16),
+	pr_group varchar(128),
+	pr_subgroup varchar(128),
+	pr_timelimit varchar(128),
+	pr_memlimit varchar(128)
+);
+
+create table userinfo_problem(
+	pr_path varchar(512) references problem(pr_path),
+	ui_id varchar(512) references userinfo(ui_id),
+	uip_language varchar(512),
+	uip_time varchar(512),
+	uip_status text,
+	uip_date varchar(512),
+	uip_srcpath varchar(512),
+	primary key(uip_srcpath,uip_date)
+);
+
+create table userlog(
+	ui_id varchar(512) references userinfo(ui_id),
+	ul_date varchar(512),
+	ul_ip varchar(512),
+	ul_env varchar(512)
+);
