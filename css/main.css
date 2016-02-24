@@ -21,38 +21,39 @@ body{
 	border-radius:10px;
 	float:right;
 	margin-left:5px;
-	width:80px;
 	height:80px;
 }
 /*=============== mobile ===============*/
 @media(max-device-width:900px){
 	.headline{
-		background:#CCCCCC;
-		height:20%;
+		height:30%;
 		min-height:100px;
 		width:100%;
-		text-align:center;
+		display:block;
 		}
 	.headline img{
-		height:50%;
+		float:none;
+		display: block;
 		margin-left: auto;
-		margin-right: auto;}
+		margin-right: auto;
+		height:50%;
+	}
 	.webmenu{
-		float:right;
-		background:#ffCCCC;
-		
-		height:90%;
-		width:250x;
+		float:left;
+		height:50%;
+		width:100%;
 		/*
 		margin-top:1%;
 		margin-bottom:1%;*/
 	}
 	.webmenu img{
-		border-radius:10px;
+		display: block;
+		margin-top: auto;
+		margin-bottom: auto;
+		border-radius:20px;
 		float:right;
-		margin-left:5px;
-		width:80px;
-		height:100%-10px;
+		margin-left:20px;
+		height:90%;
 	}
 }
 
