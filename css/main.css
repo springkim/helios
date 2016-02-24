@@ -1,0 +1,76 @@
+*{margin:0;padding:0;}
+body{
+	background-color:#ff0000;
+	/*background-color:#edf2f6;*/
+	min-width:900px;
+}
+/*==================================================*/
+/*========== headline in PC==========*/
+/*==================================================*/
+.headline{
+   background:#CCCCCC;
+   height:100px;
+   width:70%;
+   min-width:320px;
+}
+.headline img{height:100px;float:left;}
+.webmenu{
+	float:right;
+	background:#ffCCCC;
+	height:80px;
+	width:250x;
+	margin-top:10px;
+	margin-bottom:10px;
+}
+.webmenu img{
+	border-radius:10px;
+	float:right;
+	margin-left:5px;
+	width:80px;
+	height:80px;
+}
+/*=============== mobile ===============*/
+@media(max-device-width:900px){
+.headline{
+	background:#CCCCCC;
+	height:20%;
+	min-height:100px;
+	width:100%;
+	}
+}
+.webmenu{
+	float:right;
+	background:#ffCCCC;
+	height:90%;
+	width:250x;
+	margin-top:1%;
+	margin-bottom:1%;
+}
+.webmenu img{
+	border-radius:10px;
+	float:right;
+	margin-left:5px;
+	width:80px;
+	height:100%-10px;
+}
+}
+
+
+/*==================================================*/
+/*========== headline in PC==========*/
+/*==================================================*/
+@media(max-width:900px){
+   .icon{
+       background:#0044AA;
+       margin:5px;
+       width:20px;
+       height:20px;
+       float:right;
+   }
+}
+.main{
+   background:#00ff00;
+   width:70%;                        /*naver*/
+   height:1000px;
+   min-width:320px;
+}

@@ -37,6 +37,7 @@ my $salt = $q->param("SALT");
 my $state;
 my $c="";
 my $redirect_script="";
+my $script="";
 #=========================in input login==============================
 if ($id) {
 	if ($pw) {
@@ -100,6 +101,7 @@ print <<EOF
 	<script src="javascript/pbkdf2.js"></script>
 	<script src="javascript/signup.js" type="text/javascript"></script>
 	<script src="javascript/login.js" type="text/javascript"></script>
+	<script>$script</script>
 	$redirect_script
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 </head>

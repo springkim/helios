@@ -68,9 +68,7 @@ DropTable($data);
 DeleteUserPhoto();
 system "mv * ../../../login/photo/";
 system "rm -r ../temp_photo";
-CreateTable($data);$con->do("INSERT INTO userinfo VALUES('root','0985cd19195cbddbbd67552aa4c5e9de105f1481937dd79b08daf746e1f890e29be56c0ec70a7bbf8c8690fce59aa187de72d7ff742bc0e1cdfcf159f5a15106','root','root','1234','root\@root.root','root-0-.jpg','0','c0aada0546d25c2b0f3d789f4db21d3512ad0ec869b6a0823557fda8d277e472','5tShS3U4YQZHKLmgqzkFensoI4iteope')");
-$con->do("INSERT INTO userinfo VALUES('root2','d6b02eb20fccbef28956ecf0efac14db0c3447bb7ae6ae297207f4b34d68bb2585d43965358b92fdb9d43fad9024ca44ec7a89199e6c99938a4c8ea3dccf2833','root','root','12345124','root\@root.root','root2-0-.jpg','0','3ec9517d2b06d1ce31da1b7513828957fb93542c50879385c9388108dc37bf7f','.DHlayEaBtmXjJ./yDkcaS.durvbRY0m')");
-$con->do("INSERT INTO userinfo VALUES('root3','74a8ccf908a7086312553ee8966ff2a9a0768ac47b90716457e369660fd3435e174669a3b498644534b9e537650c7e5541caa4f80d855141aed677b01db94f0d','root','root','123124','root\@root.asd','root3-0-.jpg','0','49e250fccd3f36087f65d6f793dd39c91a023cb4e18a466dac7354f3c976af65','uVhwOABqb7MWLHdx7dhTUeLa4DeC/qsB')");
+CreateTable($data);$con->do("INSERT INTO userinfo VALUES('root','1e8d41d0cb997695d8029b29f2152efa1d26ad4bd1dd53c955392ccf2d3cfeec577499133925984bd199506e01b321816fa6f8460eff673e7bf31213663e8473','root','root','1234','root\@root.root','root-0-.jpg','0','d18b0d200f56ce1a549a30117a64bb3c063ea6b9c450db7f3c17d52351e4972c','pCbQOQYzj5E9UarWzd0dstcAvBwKnQRf')");
 $con->do("INSERT INTO emblem VALUES('r','image/emblem/1_r.png')");
 $con->do("INSERT INTO emblem VALUES('tree','image/emblem/2_tree.png')");
 $con->do("INSERT INTO emblem VALUES('lisp','image/emblem/1_lisp.png')");
@@ -130,12 +128,12 @@ create table problem(
 create table userinfo_problem(
 	pr_path varchar(512) references problem(pr_path),
 	ui_id varchar(512) references userinfo(ui_id),
-	uip_language varchar(128),
-	uip_time varchar(128),
-	uip_status varchar(128),
-	uip_subdate varchar(512),
-	uip_dir varchar(512),
-	primary key(pr_path,ui_id,uip_language)
+	uip_language varchar(512),
+	uip_time varchar(512),
+	uip_status text,
+	uip_date varchar(512),
+	uip_srcpath varchar(512),
+	primary key(uip_srcpath,uip_date)
 );
 
 create table userlog(

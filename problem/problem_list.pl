@@ -222,7 +222,7 @@ EOF
 
 print <<EOF
 	<div class=main_side>
-		<form action="problem.pl" method="post" name="PROBLEM_VIEW">
+		<form action="problem.pl" method="get" name="PROBLEM_VIEW">
 			<input type="hidden" id="PR_PATH" name="PR_PATH"/>
 			<div class=main_up>
 				
