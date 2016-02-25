@@ -56,7 +56,7 @@ sub InsertItemBox($$$$$){
 	return $str;
 }
 my $itembox="";
-$itembox.=InsertItemBox("image/itembox/problem_list.png","problem list","프로그래밍 문제를 풀어 보아요","#4374D9","problem/problem.pl");
+$itembox.=InsertItemBox("image/itembox/problem_list.png","problem list","프로그래밍 문제를 풀어 보아요","#AB47BC","problem/problem.pl");
 $itembox.=InsertItemBox("image/itembox/score_board.png","score board","여러분의 순위를 확인해 보세요","#F15F5F","main.pl");
 $itembox.=InsertItemBox("image/itembox/notice.png","notice","공지사항을 확인하세요","#F29661","main.pl");
 $itembox.=InsertItemBox("image/itembox/knowledge.png","knowledge","지식을 공유하세요","#2F9D27","main.pl");
