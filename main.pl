@@ -34,6 +34,34 @@ my @delete_dir=qw/. ../;
 foreach my $i(0..$#notice_imgs){
 	$notice.="<div class=\"notice_box\" id=\"notice$i\"><img src=\"image/notice/$notice_imgs[$i]\" /></div>";	
 }
+#======================================================================
+#						set item box
+#======================================================================
+sub InsertItemBox($$$$$){
+	#image , title , comment , color , link
+	my $image=shift;
+	my $title=shift;
+	my $comment=shift;
+	my $color=shift;
+	my $link=shift;
+	my $str="<div class=\"box\"><div class=\"content\" style=\"background:$color\">";
+	$str.="<div class=\"content_img\"><img src=\"$image\"/></div>";
+	$str.="<div class=\"content_title\"><h1>$title</h1></div>";
+	$str.="<div class=\"content_comment\"><p>$comment</p></div>";
+	$str.="<div class=\"content_itemgo\"><a href=\"$link\"><img src=\"image/itembox/item_go.png\"/></a></div>";
+	$str.='</div></div>';
+	
+	return $str;
+}
+my $itembox="";
+$itembox.=InsertItemBox("image/itembox/problem_list.png","problem list","프로그래밍 문제를 풀어 보아요","#4374D9","problem/problem.pl");
+$itembox.=InsertItemBox("image/itembox/score_board.png","score board","여러분의 순위를 확인해 보세요","#F15F5F","main.pl");
+$itembox.=InsertItemBox("image/itembox/notice.png","notice","공지사항을 확인하세요","#F29661","main.pl");
+$itembox.=InsertItemBox("image/itembox/knowledge.png","knowledge","지식을 공유하세요","#2F9D27","main.pl");
+
+
+
+
 #==============================WRITE PERL CGI==============================
 print $q->header(-charset=>"UTF-8");
 print <<EOF
@@ -62,21 +90,7 @@ print <<EOF
       	<div class="progress">
   			<div class="progress_bar" id="progress_bar"></div>
 		</div>
-			<div class="box"> 
-    			<div class="content" id="XXX"></div> 
-			</div>
-			<div class="box"> 
-    			<div class="content"></div> 
-			</div>
-			<div class="box"> 
-    			<div class="content"></div> 
-			</div>
-			<div class="box"> 
-    			<div class="content"></div> 
-			</div>
-			<div class="box"> 
-    			<div class="content"></div> 
-			</div>
+			$itembox
 
   </center>
 </body>
