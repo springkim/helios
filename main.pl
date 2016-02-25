@@ -71,7 +71,7 @@ while(my $row=$state->fetchrow_hashref){
 	if($cnt==10){
 		last;
 	}
-	my $str="<tr><td></td>";				#image
+	my $str="<tr>";				
 	$str.="<td><p>$row->{nt_title}</p></td>"; #title
 	$str.="<td>$row->{nt_date}</td>";	#date
 	my $state2=$con->prepare("SELECT count(nt_title) FROM notice_comment WHERE nt_title=\'$row->{nt_title}\'");

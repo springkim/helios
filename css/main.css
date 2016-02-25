@@ -1,7 +1,7 @@
-
+/*공지사항 리스트에 사용되는 폰트*/
 @import url(http://fonts.googleapis.com/earlyaccess/jejugothic.css);
 /*공지사항에 사용될 폰트*/
-
+@import url(http://fonts.googleapis.com/earlyaccess/nanumpenscript.css);
 /*==================================================*/
 /*========== main==========*/
 /*==================================================*/
@@ -69,43 +69,46 @@
 
 
 .notice_text{
-	/*background:url(../image/wood.jpg);*/
-	background:#B2EBF4;
+	background:#993800;
 	width:100%;
 	float:left;
 	border-top-left-radius:30px;
 	border-top-right-radius:30px;
 }
 .notice_text h1{
-	font-family: 'Jeju Gothic', serif;
-	color:#222222;
-}
-.notice_list{
-	
-}
-.notice_list p{
-	font-weight:bold;
-}
-.notice_list table {
-	font-family: 'Jeju Gothic', serif;
-	width:100%;
+	font-family: 'Nanum Pen Script', serif;
+	font-size:40px;
 	margin-top:10px;
 	margin-bottom:10px;
-	background-color: rgba(250, 244, 192, 1);
+	color:#efefef;
+}
+.notice_list{font-family: 'Jeju Gothic', serif;}
+.notice_list p{font-weight:bold;}
+.notice_list table {
+	width:100%;
+	margin-top:5px;
+	margin-bottom:5px;
+	background-color: rgba(250, 244, 192, 0.7);
 	border-bottom-left-radius:30px;
 	border-bottom-right-radius:30px;
 }
 .notice_list td {
 	font-size:16px;
 	color:#5D5D5D;
-	
 	text-align:center;
 	padding:9px;
 	border-collapse:collapse;
-	border-top:solid 5px #edf2f6;
-	
+	border-top:solid 1px #BDBDBD;
 }
-
+@media(max-device-width:900px){
+	.notice_text h1{font-size:80px;}
+	.notice_list td {
+		font-size:25px;
+		padding:9px;
+		border-collapse:collapse;
+		border-top:solid 1px #BDBDBD;
+	}
+}
 
 /*==================================================*/
 /*=============== item box ===============*/
@@ -117,7 +120,7 @@
     margin:10px;
 }
 @media(max-device-width:900px){
-	.box {width: 98%;margin-bottom:3%;}	
+	.box {width: 98%;margin-top:3%;}	
 }
 .box:before {content: "";display: block;padding-top: 100%;}
  
