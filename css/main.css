@@ -207,7 +207,23 @@
 	color:#dddddd;
 }
 .footer_footer{
-	height:10%;
+	height:8%;
 	width:100%;
 	background:#ff3535;
+	vertical-align:center;
+}
+@media(max-device-width:460px){
+	.footer{
+		height:50%;
+	}
+	.footer_content{
+		width:50%;
+		height:50%;
+	}
+	.footer_content h1{
+		font-size:40px;
+	}
+	.footer_content p{font-size:35px;}
+	.footer_footer p{font-size:30px;}
+	.footer_footer{height:7%;}
 }
