@@ -2,10 +2,12 @@
 use strict;
 use warnings;
 use CGI;
+use DBI;
 use Array::Utils qw(:all);
 require 'login/aes.pl';	#must be require before info.pl
 require 'login/info.pl';
 my $q=new CGI;
+my $con = DBI->connect( GetDB(), GetID(), GetPW() );
 my $c_id=GetCookieId($q);
 #======================================================================
 #						set headline menu
@@ -58,10 +60,31 @@ $itembox.=InsertItemBox("image/itembox/problem_list.png","problem list","프로�
 $itembox.=InsertItemBox("image/itembox/score_board.png","score board","여러분의 순위를 확인해 보세요","#F15F5F","main.pl");
 $itembox.=InsertItemBox("image/itembox/notice.png","notice","공지사항을 확인하세요","#F29661","main.pl");
 $itembox.=InsertItemBox("image/itembox/knowledge.png","knowledge","지식을 공유하세요","#2F9D27","main.pl");
-
-
-
-
+#======================================================================
+#						set notice title 
+#======================================================================
+my $notice_list='<div class="notice_list"><table>';
+my $state=$con->prepare("SELECT nt_title,nt_date FROM notice ORDER BY nt_date DESC");
+$state->execute();
+my $cnt=0;
+while(my $row=$state->fetchrow_hashref){
+	if($cnt==10){
+		last;
+	}
+	my $str="<tr><td></td>";				#image
+	$str.="<td><p>$row->{nt_title}</p></td>"; #title
+	$str.="<td>$row->{nt_date}</td>";	#date
+	my $state2=$con->prepare("SELECT count(nt_title) FROM notice_comment WHERE nt_title=\'$row->{nt_title}\'");
+	$state2->execute();
+	my @row=$state2->fetchrow_array;
+	$str.="<td>$row[0] comments</td>";			#comment count
+	$str.="</tr>";
+	$state2->finish;
+	$cnt++;
+	$notice_list.=$str;
+}
+$state->finish;
+$notice_list.='</table></div>';
 #==============================WRITE PERL CGI==============================
 print $q->header(-charset=>"UTF-8");
 print <<EOF
@@ -87,13 +110,21 @@ print <<EOF
       <div class="notice">
       		$notice
       	</div>
+      	
       	<div class="progress">
   			<div class="progress_bar" id="progress_bar"></div>
 		</div>
+		<div class="notice_text"><h1>공지사항</h1></div>
+		$notice_list
 			$itembox
-
+	</div>
+	<div class="footer">
+	
+	</div>
   </center>
 </body>
 </html>
 EOF
 ;
+
+$con->disconnect;

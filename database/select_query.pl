@@ -31,3 +31,5 @@ execute("SELECT * FROM problem");
 
 execute("SELECT * FROM userinfo_problem");
 
+execute("SELECT * FROM notice ORDER BY nt_date DESC");
+

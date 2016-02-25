@@ -51,3 +51,15 @@ create table userlog(
 	ul_ip varchar(512),
 	ul_env varchar(512)
 );
+create table notice(
+	nt_date varchar(512),
+	nt_title text,
+	nt_content text,
+	primary key(nt_title)
+);
+create table notice_comment(
+	nc_date varchar(512) primary key,
+	nt_title text references notice(nt_title),
+	ui_id varchar(512) references userinfo(ui_id),
+	nc_comment text
+);
