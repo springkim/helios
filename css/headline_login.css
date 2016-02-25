@@ -21,14 +21,14 @@ body{
 	height:80px;
 }
 /*=============== mobile ===============*/
-@media(max-device-width:900px){
+@media(max-device-width:460px){
 	.headline{
 		height:30%;
 		min-height:100px;
 		width:100%;
 		}
 	.headline img{
-		clear:both;
+		float:none;
 		display: block;
 		margin-left: auto;
 		margin-right: auto;

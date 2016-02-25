@@ -60,6 +60,8 @@ $itembox.=InsertItemBox("image/itembox/problem_list.png","problem list","프로�
 $itembox.=InsertItemBox("image/itembox/score_board.png","score board","여러분의 순위를 확인해 보세요","#F15F5F","main.pl");
 $itembox.=InsertItemBox("image/itembox/notice.png","notice","공지사항을 확인하세요","#F29661","main.pl");
 $itembox.=InsertItemBox("image/itembox/knowledge.png","knowledge","지식을 공유하세요","#2F9D27","main.pl");
+$itembox.=InsertItemBox("image/itembox/history.png","history","자신의 결과를 확인 하세요","#E5D85C","main.pl");
+$itembox.=InsertItemBox("image/itembox/qa.png","Q&A","궁금한 점을 물어 보세요","#6799FF","main.pl");
 #======================================================================
 #						set notice title 
 #======================================================================
@@ -85,6 +87,8 @@ while(my $row=$state->fetchrow_hashref){
 }
 $state->finish;
 $notice_list.='</table></div>';
+
+my $footer_html=GetFooterHtml();
 #==============================WRITE PERL CGI==============================
 print $q->header(-charset=>"UTF-8");
 print <<EOF
@@ -118,9 +122,7 @@ print <<EOF
 		$notice_list
 			$itembox
 	</div>
-	<div class="footer">
-	
-	</div>
+	$footer_html
   </center>
 </body>
 </html>

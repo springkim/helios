@@ -21,7 +21,7 @@ body{
 	height:80px;
 }
 /*=============== mobile ===============*/
-@media(max-device-width:900px){
+@media(max-device-width:460px){
 	.headline{
 		height:30%;
 		min-height:100px;
@@ -43,7 +43,7 @@ body{
 		margin-bottom:1%;*/
 	}
 	.webmenu img{
-		claer:both;
+		clear:both;
 		display: inline;
 		margin-top: auto;
 		margin-bottom: auto;
