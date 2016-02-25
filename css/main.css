@@ -81,11 +81,10 @@
 	box-shadow:5px 5px #bdbdbd;
 }
 .notice_text h1{
-	
-	font-family: 'Roboto Mono', ;
-	font-size:30px;
-	margin-top:10px;
-	margin-bottom:10px;
+	font-family: 'Nanum Pen Script', serif;
+	font-size:40px;
+	margin-top:5px;
+	margin-bottom:5px;
 	color:#eeeeee;
 }
 .notice_list{font-family: 'Jeju Gothic', serif;}
@@ -114,11 +113,14 @@
 @media(max-device-width:900px){
 	.notice_text h1{font-size:80px;}
 	.notice_list td {
-		font-size:40px;
+		font-size:30px;
 		padding:9px;
 		border-collapse:collapse;
 		border-top:solid 1px #BDBDBD;
 	}
+	.notice_list p{font-size:40px;font-weight:lighter;}
+	.notice_list td:nth-child(2){display:none;}
+	.notice_list td:nth-child(3){display:none;}
 }
 
 /*==================================================*/
