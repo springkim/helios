@@ -6,7 +6,7 @@ body{
 /*==================================================*/
 /*========== headline in PC==========*/
 /*==================================================*/
-.headline{height:100px;width:70%;}
+.headline{height:100px;width:900px;}
 .headline img{height:100px;float:left;}
 .webmenu{
 	float:right;
@@ -28,7 +28,7 @@ body{
 		width:100%;
 		}
 	.headline img{
-		float:none;
+		clear:both;
 		display: block;
 		margin-left: auto;
 		margin-right: auto;
