@@ -1,6 +1,6 @@
 body{
-	background-color:#ff0000;
-	background-color:#edf2f6;
+	background-color:#353535;
+	/*background-color:#edf2f6;*/
 	min-width:1000px;
 }
 /*==================================================*/
@@ -10,7 +10,7 @@ body{
 .headline img{height:100px;float:left;}
 .webmenu{
 	float:right;
-	width:170px;
+	width:175px;
 	height:80px;
 	margin-top:10px;
 }
@@ -21,7 +21,7 @@ body{
 	height:80px;
 }
 /*=============== mobile ===============*/
-@media(max-device-width:460px){
+@media(max-device-width:460px) and (orientation:portrait){
 	.headline{
 		height:30%;
 		min-height:100px;

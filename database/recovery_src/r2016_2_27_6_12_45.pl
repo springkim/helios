@@ -68,25 +68,63 @@ DropTable($data);
 DeleteUserPhoto();
 system "mv * ../../../login/photo/";
 system "rm -r ../temp_photo";
-CreateTable($data);$con->do("INSERT INTO userinfo VALUES('root','1e8d41d0cb997695d8029b29f2152efa1d26ad4bd1dd53c955392ccf2d3cfeec577499133925984bd199506e01b321816fa6f8460eff673e7bf31213663e8473','root','root','1234','root\@root.root','root-0-.jpg','0','d18b0d200f56ce1a549a30117a64bb3c063ea6b9c450db7f3c17d52351e4972c','pCbQOQYzj5E9UarWzd0dstcAvBwKnQRf')");
-$con->do("INSERT INTO emblem VALUES('r','image/emblem/1_r.png')");
+CreateTable($data);$con->do("INSERT INTO emblem VALUES('pascal','image/emblem/1_pascal.png')");
 $con->do("INSERT INTO emblem VALUES('tree','image/emblem/2_tree.png')");
-$con->do("INSERT INTO emblem VALUES('lisp','image/emblem/1_lisp.png')");
-$con->do("INSERT INTO emblem VALUES('fortran','image/emblem/1_fortran.png')");
-$con->do("INSERT INTO emblem VALUES('list','image/emblem/2_list.png')");
-$con->do("INSERT INTO emblem VALUES('graph','image/emblem/2_graph.png')");
-$con->do("INSERT INTO emblem VALUES('c','image/emblem/1_c.png')");
-$con->do("INSERT INTO emblem VALUES('java','image/emblem/1_java.png')");
 $con->do("INSERT INTO emblem VALUES('python','image/emblem/1_python.png')");
-$con->do("INSERT INTO emblem VALUES('pascal','image/emblem/1_pascal.png')");
+$con->do("INSERT INTO emblem VALUES('lisp','image/emblem/1_lisp.png')");
+$con->do("INSERT INTO emblem VALUES('graph','image/emblem/2_graph.png')");
 $con->do("INSERT INTO emblem VALUES('perl','image/emblem/1_perl.png')");
+$con->do("INSERT INTO emblem VALUES('r','image/emblem/1_r.png')");
 $con->do("INSERT INTO emblem VALUES('cpp','image/emblem/1_cpp.png')");
+$con->do("INSERT INTO emblem VALUES('fortran','image/emblem/1_fortran.png')");
+$con->do("INSERT INTO emblem VALUES('c','image/emblem/1_c.png')");
+$con->do("INSERT INTO emblem VALUES('list','image/emblem/2_list.png')");
+$con->do("INSERT INTO emblem VALUES('java','image/emblem/1_java.png')");
 $con->do("INSERT INTO problem VALUES('problem/problem_list/d0001.html','링크드리스트 구현','1','datastructure','list','1','128')");
 $con->do("INSERT INTO problem VALUES('problem/problem_list/e0001.html','두 숫자 더하기','1','algorithm','basic','1','128')");
-$con->do("INSERT INTO problem VALUES('problem/problem_list/e0005.html','A를 찾아라!!','2','algorithm','basic','1','128')");
 $con->do("INSERT INTO problem VALUES('problem/problem_list/e0004.html','홀수 짝수 판별','1','algorithm','basic','1','128')");
-$con->do("INSERT INTO problem VALUES('problem/problem_list/e0002.html','숫자들의 합','1','algorithm','basic','1','128')");
 $con->do("INSERT INTO problem VALUES('problem/problem_list/e0003.html','약수 구하기','1','algorithm','basic','1','128')");
+$con->do("INSERT INTO problem VALUES('problem/problem_list/e0002.html','숫자들의 합','1','algorithm','basic','1','128')");
+$con->do("INSERT INTO problem VALUES('problem/problem_list/e0005.html','A를 찾아라!!','2','algorithm','basic','1','128')");
+$con->do("INSERT INTO notice VALUES('2016-02-25','2016년 사이트가 개설 되었습니다','안녕하세요.
+저희 BlueCandle 사이트는 프로그래밍 공부를 하기위한 사이트 입니다.
+많은 애용 부탁드립니다.
+')");
+$con->do("INSERT INTO notice VALUES('2016-02-25','현재 채점 가능한 프로그래밍 언어입니다','현재 C , C++ , Perl 언어에 대해서만 지원중입니다.
+다른 언어는 추후 지원예정.
+')");
+$con->do("INSERT INTO notice VALUES('2016-02-25','this is test notice','안녕하세요.
+저희 BlueCandle 사이트는 프로그래밍 공부를 하기위한 사이트 입니다.
+많은 애용 부탁드립니다.
+')");
+$con->do("INSERT INTO notice VALUES('2016-02-25','공지사항 리스트에 사용되는 폰트','안녕하세요.
+저희 BlueCandle 사이트는 프로그래밍 공부를 하기위한 사이트 입니다.
+많은 애용 부탁드립니다.
+')");
+$con->do("INSERT INTO notice VALUES('2016-02-25','소스코드 제출시 유의사항','안녕하세요.
+저희 BlueCandle 사이트는 프로그래밍 공부를 하기위한 사이트 입니다.
+많은 애용 부탁드립니다.
+')");
+$con->do("INSERT INTO notice VALUES('2016-02-25','JAVA 하지 마세요','안녕하세요.
+저희 BlueCandle 사이트는 프로그래밍 공부를 하기위한 사이트 입니다.
+많은 애용 부탁드립니다.
+')");
+$con->do("INSERT INTO notice VALUES('2016-02-25','컴퓨터 좋은거 쓰세요','안녕하세요.
+저희 BlueCandle 사이트는 프로그래밍 공부를 하기위한 사이트 입니다.
+많은 애용 부탁드립니다.
+')");
+$con->do("INSERT INTO notice VALUES('2016-02-25','뭘 써야할지 모르겠다.','안녕하세요.
+저희 BlueCandle 사이트는 프로그래밍 공부를 하기위한 사이트 입니다.
+많은 애용 부탁드립니다.
+')");
+$con->do("INSERT INTO notice VALUES('2016-02-25','원고 투고 쓰리고','안녕하세요.
+저희 BlueCandle 사이트는 프로그래밍 공부를 하기위한 사이트 입니다.
+많은 애용 부탁드립니다.
+')");
+$con->do("INSERT INTO notice VALUES('2016-02-25','코카콜라는 맜있어','안녕하세요.
+저희 BlueCandle 사이트는 프로그래밍 공부를 하기위한 사이트 입니다.
+많은 애용 부탁드립니다.
+')");
 $con->disconnect;
 __DATA__
 create table userinfo(
@@ -141,4 +179,16 @@ create table userlog(
 	ul_date varchar(512),
 	ul_ip varchar(512),
 	ul_env varchar(512)
+);
+create table notice(
+	nt_date varchar(512),
+	nt_title text,
+	nt_content text,
+	primary key(nt_title)
+);
+create table notice_comment(
+	nc_date varchar(512) primary key,
+	nt_title text references notice(nt_title),
+	ui_id varchar(512) references userinfo(ui_id),
+	nc_comment text
 );

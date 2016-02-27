@@ -10,7 +10,7 @@ body{
 .headline img{height:100px;float:left;}
 .webmenu{
 	float:right;
-	width:255px;
+	width:260px;	/*(80+5)(image-width + margin) * 3   if(IE) +5*/
 	height:80px;
 	margin-top:10px;
 }
@@ -21,7 +21,7 @@ body{
 	height:80px;
 }
 /*=============== mobile ===============*/
-@media(max-device-width:460px){
+@media(max-device-width:460px) and (orientation:portrait){
 	.headline{
 		height:30%;
 		min-height:100px;
