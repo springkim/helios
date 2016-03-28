@@ -63,3 +63,16 @@ create table notice_comment(
 	ui_id varchar(512) references userinfo(ui_id),
 	nc_comment text
 );
+create table question(
+	ui_id varchar(512) references userinfo(ui_id),
+	qe_title text primary key
+	qe_content text,
+	qe_date varchar(512)
+	qe_watch boolean;
+	qe_answer text,
+);
+create table favorite(
+	ui_id varchar(512) references userinfo(ui_id),
+	fa_title varchar(512),
+	fa_link text
+);
