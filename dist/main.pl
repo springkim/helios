@@ -14,7 +14,7 @@ my $c_id=GetCookieId($q);
 
 #==============================WRITE PERL CGI==============================
 print $q->header(-charset=>"UTF-8");
-print_head($q);
+print_head($q,$c_id);
 print '<body class="framed main-scrollable"><div class="wrapper">';
 
 
@@ -24,9 +24,10 @@ print '<body class="framed main-scrollable"><div class="wrapper">';
 print_header();
 print '<div class="dashboard">';
 
-print_sidemenu();
+print_sidemenu($c_id);
 print '</div>';
 
+print_demo();
 print_js();
 print '</div></body></html>';
 $con->disconnect;

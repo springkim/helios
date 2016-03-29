@@ -14,13 +14,32 @@ $side_menu[1][0]="MailBox";$side_menu_href[1][0]="";
 	$side_menu[1][3]="Compose Mail";$side_menu_href[1][3]="mail/compose.pl";
 $side_menu[2][0]="Question";$side_menu_href[2][0]="question.pl";
 $side_menu[3][0]="User";$side_menu_href[3][0]="user.pl";
-
-
-sub print_head($){
-	my $q=shift;
-	my $bd = HTTP::BrowserDetect->new($q->user_agent());
-	my $env=$bd->browser_string(). ' '. $bd->public_version();
-	$title=$env;
+sub GetTheme($){
+	my $id=shift;
+	if(!$id){
+		return 'css/right.dark.css';
+	}
+	my $theme='css/right.lilac.css';;	#dark,universe
+	my $con = DBI->connect( GetDB(), GetID(), GetPW() );
+	my $state=$con->prepare("SELECT ui_theme FROM userinfo WHERE ui_id=\'$id\'");
+	$state->execute;
+	my @row=$state->fetchrow_array;
+	if($row[0] eq 'dark'){
+		$theme='css/right.dark.css';
+	}elsif($row[0] eq 'lilac'){
+		$theme='css/right.lilac.css';
+	}
+	$con->disconnect;
+	return $theme;
+}
+#param q , id
+sub print_head($$){
+	my ($q,$id)=@_;
+	my $theme=GetTheme($id);
+	#my $bd = HTTP::BrowserDetect->new($q->user_agent());
+	#my $env=$bd->browser_string(). ' '. $bd->public_version();
+	$title=$id;
+	
 print <<EOF
 <html lang="en">
   <head>
@@ -37,8 +56,9 @@ print <<EOF
     <link href="libs/ionrangeslider/css/ion.rangeSlider.css" rel="stylesheet">
     <link href="libs/ionrangeslider/css/ion.rangeSlider.skinFlat.css" rel="stylesheet">
     <link href="libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css" rel="stylesheet">
-    <link href="css/right.dark.css" rel="stylesheet" class="demo__css">
+    <link href="$theme" rel="stylesheet" class="demo__css">
     <link href="css/demo.css" rel="stylesheet"><!--[if lt IE 9]>
+    
     <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
     <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
   </head>
@@ -142,45 +162,54 @@ sub print_sidemenu($){
 	my @level_count;
 	my $friends;
 	my $user_log;
+	my $theme_select;
+	my $auto_login="";
+	my $save_log="";
+	my $visit_cnt=0;
+	my $visit_graph='0';
+	my $solve_cnt=0;
+	my $solve_graph='0';
+	my $rank_cnt=0;
+	my $rank_graph='0';
 	foreach my $i(0..3){
 		push @level_count,0;
 	}
 	my $con = DBI->connect( GetDB(), GetID(), GetPW() );
 	if($id){
 			#get non watch count
-			my $state=$con->prepare("SELECT count(qe_watch) FROM question WHERE ui_id=$id and qe_watch=FALSE");
+			my $state=$con->prepare("SELECT count(qe_watch) FROM question WHERE ui_id=\'$id\' and qe_watch=FALSE");
 			$state->execute();
 			my @row=$state->fetchrow_array;
 			$question_count=$row[0];
 			$state->finish();
 			#get favorite link list
-			$state=$con->prepare("SELECT fa_title,fa_link FROM favorite WHERE ui_id=$id");
+			$state=$con->prepare("SELECT fa_title,fa_link FROM favorite WHERE ui_id=\'$id\'");
 			$state->execute();
 			while ( my $row = $state->fetchrow_hashref ){
 					$favorite_link.="<li><a href=\"$row->{fa_link}\">$row->{fa_title}</a></li>";
 			}
 			$state->finish;
 			#get Algorithm problem count
-			$state=$con->prepare("SELECT count(problem.pr_path) FROM userinfo_problem,problem WHERE pr_group=\'algorithm\' and ui_id=$id");
+			$state=$con->prepare("SELECT count(problem.pr_path) FROM userinfo_problem,problem WHERE pr_group=\'algorithm\' and ui_id=\'$id\'");
 			$state->execute;
 			@row=$state->fetchrow_array;
 			$algorithm_solve=$row[0];
 			$state->finish;
 			#get DataStructure problem count
-			$state=$con->prepare("SELECT count(problem.pr_path) FROM userinfo_problem,problem WHERE pr_group=\'datastructure\' and ui_id=$id");
+			$state=$con->prepare("SELECT count(problem.pr_path) FROM userinfo_problem,problem WHERE pr_group=\'datastructure\' and ui_id=\'$id\'");
 			$state->execute;
 			@row=$state->fetchrow_array;
 			$ds_solve=$row[0];
 			$state->finish;
 			#get level solve count
 			foreach my $i(0..3){
-				$state=$con->prepare("SELECT count(problem.pr_path) FROM userinfo_problem,problem WHERE pr_level=\'$i\' and ui_id=$id");
+				$state=$con->prepare("SELECT count(problem.pr_path) FROM userinfo_problem,problem WHERE pr_level=\'$i\' and ui_id=\'$id\'");
 				$state->execute;
 				@row=$state->fetchrow_array;
 				$level_count[$i]=$row[0];
 				$state->finish;
 			}
-			$state=$con->prepare("SELECT ui_comment,ui_level,ui_name FROM userinfo,friend WHERE ui_id1=$id and ui_id2=ui_id");
+			$state=$con->prepare("SELECT ui_comment,ui_level,ui_name FROM userinfo,friend WHERE ui_id1=\'$id\' and ui_id2=ui_id");
 			$state->execute;
 			while(my $row=$state->fetchrow_hashref){
 					my $tag;
@@ -199,7 +228,7 @@ sub print_sidemenu($){
                     </div>";
 			}
 			$state->finish;
-			$state=$con->prepare("SELECT ul_ip,ul_env,ul_date FROM userlog WHERE ui_id=$id");
+			$state=$con->prepare("SELECT ul_ip,ul_env,ul_date FROM userlog WHERE ui_id=\'$id\'");
 			$state->execute;
 			while(my $row=$state->fetchrow_hashref){
 				my $ip=$row->{ul_ip};
@@ -210,14 +239,42 @@ sub print_sidemenu($){
 					$icon="fa-chrome";
 				}elsif($env=~/firefox/i){
 					$icon="fa-firefox";
+				}elsif($env=~/MSIE/i){
+					$icon="fa-internet-explorer";
+				}elsif($env=~/Edge/i){
+					$icon="fa-edge";
+				}elsif($env=~/Opera/i){
+					$icon="fa-opera";
+				}elsif($env=~/Safari/i){
+					$icon="fa-apple";
 				}
 				$user_log.="<div class=\"ra-widget__item\">
-                      		<div class=\"nav-menu__ico\"><i class=\"fa fa-fw fa-graduation-cap\"></i></div>
-                      		<div class=\"nav-menu__text\"><span>At $ip,in $env,$date</span></div>
-                      </div>";
+                      		<div class=\"nav-menu__ico\"><i class=\"fa fa-fw $icon\"></i></div>
+                      		<div class=\"nav-menu__text\"><span><b>$env</b></br>$ip</br>$date</span></div>
+                      	</div>";
 			}
 			$state->finish;
-			
+			$state=$con->prepare("SELECT ui_autologin,ui_savelog FROM userinfo WHERE ui_id=\'$id\'");
+			$state->execute;
+			my $row=$state->fetchrow_hashref;
+			if($row->{ui_autologin} eq '1'){
+				$auto_login='checked="checked"';
+			}
+			if($row->{ui_savelog} eq '1'){
+				$save_log='checked="checked"';
+			}
+			$state->finish;
+			$state=$con->prepare("SELECT udi_visit,udi_solve,udi_rank FROM userdateinfo WHERE ui_id=\'$id\' OREDR BY udi_optday DESC");
+			$state->execute;
+			while(my $row=$state->fetchrow_hashref){
+					$visit_cnt=($visit_cnt,$row->{udi_visit})[$visit_cnt<$row->{udi_visit}];
+					$solve_cnt=($solve_cnt,$row->{udi_solve})[$solve_cnt<$row->{udi_solve}];
+					$rank_cnt=($rank_cnt,$row->{udi_rank})[$rank_cnt<$row->{udi_rank}];
+					$visit_graph.=",$row->{udi_visit}";
+					$solve_graph.=",$row->{udi_solve}";
+					$rank_graph.=",$row->{udi_rank}";
+			}
+			$state->finish;
 	}
 	#get Algorithm problem count
 	my $state=$con->prepare("SELECT count(pr_path) FROM problem WHERE pr_group=\'algorithm\'");
@@ -236,8 +293,21 @@ sub print_sidemenu($){
 	foreach my $i(1..3){
 		$mail_submenu.="<li><a href=\"$side_menu_href[1][$i]\">$side_menu[1][$i]</a></li>";	
 	}
-	
+	my @theme_active=(0,0);
+	$theme_select=GetTheme($id);
+	if($theme_select =~ /dark/i){
+		$theme_active[0]='demo__theme_active';
+	}elsif($theme_select =~ /lilac/i){
+		$theme_active[1]='demo__theme_active';
+	}
+	$theme_select="<div class=\"demo__themes\">
+              	<div data-css=\"css/right.dark.css\" title=\"Dark\" class=\"demo__theme $theme_active[0] demo__theme_dark\"></div>
+              	<div data-css=\"css/right.lilac.css\" title=\"Lilac\" class=\"demo__theme $theme_active[1] demo__theme_lilac\"></div>
+            	  </div>";
 	print <<EOF
+	<form method="post">
+		<input type="hidden" id="userid" value="$id"/>
+	</form>
 		<div class="sidebar">
           <div class="quickmenu">
             <div class="quickmenu__cont">
@@ -252,7 +322,7 @@ sub print_sidemenu($){
                   <div class="fa fa-fw fa-user-plus"></div>
                 </div>
                 <div class="quickmenu__item">
-                  <div class="fa fa-fw fa-feed"></div>
+                  <div class="fa fa-fw fa-heart"></div>
                 </div>
                 <div class="quickmenu__item">
                   <div class="fa fa-fw fa-cog"></div>
@@ -402,131 +472,52 @@ sub print_sidemenu($){
                 <div class="ra-widget">
                   <div class="ra-widget__cont">
                     <div class="ra-widget__list">
-                      <div class="ra-widget__item">
-                        <div class="ra-widget__ico"><i class="fa fa-fw"></i></div>
-                        <div class="ra-widget__info">
-                          <div class="ra-widget__text"><a href='./'>Gary Long</a> has registered.<span class="ra-widget__date">09:20</span></div>
-                        </div>
-                      </div>
-                      <div class="ra-widget__item">
-                      		<div class="nav-menu__ico"><i class="fa fa-fw fa-graduation-cap"></i></div>
-                      		<div class="nav-menu__text"><span>Yscec</span></div>
-                      </div>
-                      <div class="ra-widget__item ra-widget__item_order">
-                        <div class="ra-widget__ico"><i class="fa fa-fw"></i></div>
-                        <div class="ra-widget__info">
-                          <div class="ra-widget__text">Order <a href='./'>#35108243</a>.<span class="ra-widget__date">Jan 28, 09:42</span></div>
-                        </div>
-                      </div>
-                      <div class="ra-widget__item ra-widget__item_subscriber">
-                        <div class="ra-widget__ico"><i class="fa fa-fw"></i></div>
-                        <div class="ra-widget__info">
-                          <div class="ra-widget__text"><a href='./'>Julie Payne</a> subscribed to news.<span class="ra-widget__date">Jan 28, 18:06</span></div>
-                        </div>
-                      </div>
-                      <div class="ra-widget__item ra-widget__item_mail">
-                        <div class="ra-widget__ico"><i class="fa fa-fw"></i></div>
-                        <div class="ra-widget__info">
-                          <div class="ra-widget__text">30 letters was sent.<span class="ra-widget__date">Jan 27, 03:08</span></div>
-                        </div>
-                      </div>
-                      <div class="ra-widget__item ra-widget__item_order">
-                        <div class="ra-widget__ico"><i class="fa fa-fw"></i></div>
-                        <div class="ra-widget__info">
-                          <div class="ra-widget__text">Order <a href='./'>#35597433</a>.<span class="ra-widget__date">Jan 26, 19:02</span></div>
-                        </div>
-                      </div>
-                      <div class="ra-widget__item ra-widget__item_payment">
-                        <div class="ra-widget__ico"><i class="fa fa-fw"></i></div>
-                        <div class="ra-widget__info">
-                          <div class="ra-widget__text">$385 incoming payment.<span class="ra-widget__date">Jan 26, 18:06</span></div>
-                        </div>
-                      </div>
-                      <div class="ra-widget__item ra-widget__item_payment">
-                        <div class="ra-widget__ico"><i class="fa fa-fw"></i></div>
-                        <div class="ra-widget__info">
-                          <div class="ra-widget__text">$2824 incoming payment.<span class="ra-widget__date">Jan 26, 09:11</span></div>
-                        </div>
-                      </div>
-                      <div class="ra-widget__item ra-widget__item_subscriber">
-                        <div class="ra-widget__ico"><i class="fa fa-fw"></i></div>
-                        <div class="ra-widget__info">
-                          <div class="ra-widget__text"><a href='./'>Greg Bush</a> subscribed to news.<span class="ra-widget__date">Jan 26, 05:36</span></div>
-                        </div>
-                      </div>
-                      <div class="ra-widget__item ra-widget__item_product">
-                        <div class="ra-widget__ico"><i class="fa fa-fw"></i></div>
-                        <div class="ra-widget__info">
-                          <div class="ra-widget__text">New product <a href='./'>Shoober</a>.<span class="ra-widget__date">Jan 25, 23:19</span></div>
-                        </div>
-                      </div>
-                      <div class="ra-widget__item ra-widget__item_order">
-                        <div class="ra-widget__ico"><i class="fa fa-fw"></i></div>
-                        <div class="ra-widget__info">
-                          <div class="ra-widget__text">Order <a href='./'>#31248769</a>.<span class="ra-widget__date">Jan 25, 16:51</span></div>
-                        </div>
-                      </div>
-                      <div class="ra-widget__item ra-widget__item_payment">
-                        <div class="ra-widget__ico"><i class="fa fa-fw"></i></div>
-                        <div class="ra-widget__info">
-                          <div class="ra-widget__text">$3205 incoming payment.<span class="ra-widget__date">Jan 25, 10:44</span></div>
-                        </div>
-                      </div>
+                      $user_log
                     </div>
                   </div>
                 </div>
               </div>
               <div class="sidebar__menu">
                 <div class="sidebar__title">Settings</div>
+                
                 <div class="ss-widget">
+                 $theme_select
                   <div class="ss-widget__cont">
                     <div class="ss-widget__row">
-                      <div class="ss-widget__cell">Site</div>
+                      <div class="ss-widget__cell">AutoLogin</div>
                       <div class="ss-widget__cell">
-                        <input type="checkbox" checked="checked" data-size="micro" data-on-color="success" data-off-color="danger" class="bs-switch">
+                     
+                        <input id="autologin" type="checkbox" $auto_login data-size="micro" data-on-color="success" data-off-color="danger" class="bs-switch">
+                       
+                        
                       </div>
                     </div>
                     <div class="ss-widget__row">
-                      <div class="ss-widget__cell">Mailing</div>
+                      <div class="ss-widget__cell">Save Log</div>
                       <div class="ss-widget__cell">
-                        <input type="checkbox" data-size="micro" data-on-color="success" data-off-color="danger" class="bs-switch">
+                        <input id="savelog" type="checkbox" $save_log data-size="micro" data-on-color="success" data-off-color="danger" class="bs-switch">
                       </div>
                     </div>
-                    <div class="ss-widget__item">
-                      <div class="ss-widget__label">Limit</div>
-                      <div class="ss-widget__value">
-                        <input type="text" name="" value="" data-grid="false" data-min="0" data-max="2000" data-from="600" data-step="200" class="settings-slider">
-                      </div>
-                    </div>
-                    <div class="ss-widget__row">
-                      <div class="ss-widget__cell">Timeout</div>
-                      <div class="ss-widget__cell">
-                        <input type="number" min="5" max="50" step="5" value="15" class="form-control input-sm">
-                      </div>
-                    </div>
-                  </div>
+                    
                 </div>
                 <div class="sidestat">
                   <div class="sidestat__cont">
                     <div class="sidestat__item">
-                      <div class="sidestat__value">1,760</div>
-                      <div class="sidestat__text">visits of your site</div>
-                      <div class="sidestat__chart sparkline bar">1699,1686,8368,9011,6129,3837,0997,2034,0483,1457,2950,8946,0866,6247,8222,5727,0020,6883,3410,5224,2034,0483,1457,2950,5946,0866</div>
+                      <div class="sidestat__value">$visit_cnt</div>
+                      <div class="sidestat__text">visits</div>
+                      <div class="sidestat__chart sparkline bar">$visit_graph</div>
+                    </div>
+                    
+                   
+                    <div class="sidestat__item">
+                      <div class="sidestat__value">$solve_cnt</div>
+                      <div class="sidestat__text">solved problem</div>
+                      <div class="sidestat__chart sparkline line">$solve_graph</div>
                     </div>
                     <div class="sidestat__item">
-                      <div class="sidestat__value">2,034</div>
-                      <div class="sidestat__text">views of your products</div>
-                      <div class="sidestat__chart sparkline area">5696,6514,9647,6326,6028,8869,8251,9146,6137,8997,6892,9544,7011,6556,7737,8348,7011,6558,7556</div>
-                    </div>
-                    <div class="sidestat__item">
-                      <div class="sidestat__value">$2,950</div>
-                      <div class="sidestat__text">average day earning</div>
-                      <div class="sidestat__chart sparkline bar_thin">6658,8005,9033,8360,3385,9018,9089,7804,5574,7556,6910,4327,7500,6563,0649,2584,8757,6815,8368,9011,6129,3837,0997,2034,0483,1457,2950,8946,0866,6247,3385,9018,9089,7804,5574,7556,6910,4327,7500,7804,5574,7556,6910,4327,7500,6563,0649,2584</div>
-                    </div>
-                    <div class="sidestat__item">
-                      <div class="sidestat__value">290</div>
-                      <div class="sidestat__text">month orders</div>
-                      <div class="sidestat__chart sparkline line">075,487,581,520,075,630,350,631,794,666,466,322,833,471,721,703,042,328,844,996,099,342,841,599</div>
+                      <div class="sidestat__value">$rank_cnt</div>
+                      <div class="sidestat__text">your rank</div>
+                      <div class="sidestat__chart sparkline area">$rank_graph</div>
                     </div>
                   </div>
                 </div>
@@ -549,7 +540,26 @@ EOF
 
 
 
-
+sub print_demo(){
+print <<EOF
+<div class="demo">
+      <div class="demo__ico"></div>
+      <div class="demo__cont">
+        <div class="demo__settings">
+          <div class="demo__group">
+            <div class="demo__label">Color theme:</div>
+            <div class="demo__themes">
+              <div data-css="css/right.dark.css" title="Dark" class="demo__theme demo__theme_active demo__theme_dark"></div>
+              <div data-css="css/right.lilac.css" title="Lilac" class="demo__theme demo__theme_lilac"></div>
+              <div data-css="css/right.light.css" title="Light" class="demo__theme demo__theme_light"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+EOF
+;	
+}
 sub print_js(){
 	print <<EOF
 	<script src="libs/jquery/jquery.min.js"></script>
@@ -562,6 +572,8 @@ sub print_js(){
     <script src="libs/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
     <script src="js/main.js"></script>
     <script src="js/demo.js"></script>
+    
+    <script src="common_html.js"></script>
 EOF
 	;	
 }

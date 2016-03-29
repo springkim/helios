@@ -11,10 +11,11 @@ sub execute($) {
 	my $state = $con->prepare($query);
 	$state->execute();
 	while ( my @row = $state->fetchrow_array ){
-		foreach my $i (@row) {
-			print $i. " ";
+		foreach my $i (0..$#row) {
+			print $row[$i]," ";
 		}
 		print "\n";
+		print $#row,"\n";
 	}
 	$state->finish();
 	$con->disconnect;

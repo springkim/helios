@@ -84,11 +84,13 @@ body.main-scrollable .main {
 }
 .header-navbar .navbar-header {
   position: relative;
+ 
 }
 .header-navbar .navbar-brand {
   padding: 0;
   height: auto;
   width: 200px;
+
 }
 .header-navbar .topnavbar {
   float: left;
@@ -117,6 +119,7 @@ body.main-scrollable .main {
   display: inline-block;
   vertical-align: middle;
   font-size: 16px;
+
 }
 .header-navbar .nav > li.active,
 .header-navbar .nav > li:hover,
@@ -224,6 +227,7 @@ body.main-scrollable .main {
   overflow: hidden;
   background-color: #30363c;
   border-bottom-left-radius: 5px;
+
   position: relative;
   display: inline-block;
   height: 100%;
@@ -384,6 +388,7 @@ body.main-scrollable .main {
 }
 .quickmenu__item:hover {
   background-color: rgba(36, 41, 44, 0.5);
+
 }
 .quickmenu__item.active {
   color: #fff;
@@ -414,6 +419,8 @@ body.main-scrollable .main {
   padding-left: 200px;
   margin-left: -200px;
   overflow-y: auto;
+
+
 }
 @media (max-width: 768px) {
   .main {
