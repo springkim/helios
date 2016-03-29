@@ -5,24 +5,21 @@ create table userinfo(
 	ui_guild varchar(512),
 	ui_phone varchar(512),
 	ui_email varchar(512),
-	ui_photo varchar(512),
 	ui_level int,
+	ui_photo varchar(512),
 	ui_salt1 varchar(512),
-	ui_salt2 varchar(512)
+	ui_salt2 varchar(512),
+	ui_comment varchar(512)
 );
 create table admin(
 	ui_id varchar(512) references userinfo(ui_id)
 );
 create table superadmin(
-ui_id varchar(512) references userinfo(ui_id)
-);
-create table emblem(
-	eb_name varchar(512) primary key,
-	eb_path varchar(260)
-);
-create table userinfo_emblem(
-	eb_name varchar(512) references emblem(eb_name),
 	ui_id varchar(512) references userinfo(ui_id)
+);
+create table friend(
+	ui_id1 varchar(512) references userinfo(ui_id),
+	ui_id2 varchar(512) references userinfo(ui_id)
 );
 create table problem(
 	pr_path varchar(260) primary key,
@@ -33,7 +30,6 @@ create table problem(
 	pr_timelimit varchar(128),
 	pr_memlimit varchar(128)
 );
-
 create table userinfo_problem(
 	pr_path varchar(512) references problem(pr_path),
 	ui_id varchar(512) references userinfo(ui_id),
@@ -65,11 +61,11 @@ create table notice_comment(
 );
 create table question(
 	ui_id varchar(512) references userinfo(ui_id),
-	qe_title text primary key
+	qe_title text primary key,
 	qe_content text,
-	qe_date varchar(512)
-	qe_watch boolean;
-	qe_answer text,
+	qe_date varchar(512),
+	qe_watch boolean,
+	qe_answer text
 );
 create table favorite(
 	ui_id varchar(512) references userinfo(ui_id),

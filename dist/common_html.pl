@@ -1,6 +1,8 @@
+use strict;
+use warnings;
 use DBI;
+use HTTP::BrowserDetect qw( );
 require '../login/info.pl';
-
 my $title='Helios';	#page title
 
 my @side_menu;
@@ -14,7 +16,11 @@ $side_menu[2][0]="Question";$side_menu_href[2][0]="question.pl";
 $side_menu[3][0]="User";$side_menu_href[3][0]="user.pl";
 
 
-sub print_head(){
+sub print_head($){
+	my $q=shift;
+	my $bd = HTTP::BrowserDetect->new($q->user_agent());
+	my $env=$bd->browser_string(). ' '. $bd->public_version();
+	$title=$env;
 print <<EOF
 <html lang="en">
   <head>
@@ -124,25 +130,108 @@ sub print_header($){
 EOF
 	;
 }
-
+my $detail_view_href="";
 sub print_sidemenu($){
 	my $id=shift;
 	my $question_count=0;
 	my $favorite_link;
+	my $algorithm_total=0;
+	my $algorithm_solve=0;
+	my $ds_total=0;
+	my $ds_solve=0;
+	my @level_count;
+	my $friends;
+	my $user_log;
+	foreach my $i(0..3){
+		push @level_count,0;
+	}
+	my $con = DBI->connect( GetDB(), GetID(), GetPW() );
 	if($id){
-			my $con = DBI->connect( GetDB(), GetID(), GetPW() );
-			my $state=$con->prepare("SELECT count(qe_watch) FROM question WHERE ui_id=$id and qe_watch=TRUE");
+			#get non watch count
+			my $state=$con->prepare("SELECT count(qe_watch) FROM question WHERE ui_id=$id and qe_watch=FALSE");
 			$state->execute();
 			my @row=$state->fetchrow_array;
 			$question_count=$row[0];
 			$state->finish();
+			#get favorite link list
 			$state=$con->prepare("SELECT fa_title,fa_link FROM favorite WHERE ui_id=$id");
 			$state->execute();
 			while ( my $row = $state->fetchrow_hashref ){
 					$favorite_link.="<li><a href=\"$row->{fa_link}\">$row->{fa_title}</a></li>";
 			}
-			$con->disconnect;
+			$state->finish;
+			#get Algorithm problem count
+			$state=$con->prepare("SELECT count(problem.pr_path) FROM userinfo_problem,problem WHERE pr_group=\'algorithm\' and ui_id=$id");
+			$state->execute;
+			@row=$state->fetchrow_array;
+			$algorithm_solve=$row[0];
+			$state->finish;
+			#get DataStructure problem count
+			$state=$con->prepare("SELECT count(problem.pr_path) FROM userinfo_problem,problem WHERE pr_group=\'datastructure\' and ui_id=$id");
+			$state->execute;
+			@row=$state->fetchrow_array;
+			$ds_solve=$row[0];
+			$state->finish;
+			#get level solve count
+			foreach my $i(0..3){
+				$state=$con->prepare("SELECT count(problem.pr_path) FROM userinfo_problem,problem WHERE pr_level=\'$i\' and ui_id=$id");
+				$state->execute;
+				@row=$state->fetchrow_array;
+				$level_count[$i]=$row[0];
+				$state->finish;
+			}
+			$state=$con->prepare("SELECT ui_comment,ui_level,ui_name FROM userinfo,friend WHERE ui_id1=$id and ui_id2=ui_id");
+			$state->execute;
+			while(my $row=$state->fetchrow_hashref){
+					my $tag;
+					if($row->{ui_level}==1){
+						$tag="tag_support";
+					}elsif($row->{ui_level}==2){
+						$tag="tag_social";
+					}elsif($row->{ui_level}==3){
+						$tag="tag_clients";	
+					}elsif($row->{ui_level}==4){
+						$tag="tag_crazy";	
+					}
+					$friends.="<div class=\"lm-widget__item new\">
+                      <div class=\"lm-widget__title\"><i class=\"fa fa-fw fa-tag $tag\"></i><span>$row->{ui_name}</span></div>
+                      <div class=\"lm-widget__text\">$row->{ui_comment}</div><a href=\"#\" class=\"lm-widget__link\"></a>
+                    </div>";
+			}
+			$state->finish;
+			$state=$con->prepare("SELECT ul_ip,ul_env,ul_date FROM userlog WHERE ui_id=$id");
+			$state->execute;
+			while(my $row=$state->fetchrow_hashref){
+				my $ip=$row->{ul_ip};
+				my $env=$row->{ul_env};
+				my $date=$row->{ul_date};
+				my $icon="fa-spinner";
+				if($env=~/chrome/i){
+					$icon="fa-chrome";
+				}elsif($env=~/firefox/i){
+					$icon="fa-firefox";
+				}
+				$user_log.="<div class=\"ra-widget__item\">
+                      		<div class=\"nav-menu__ico\"><i class=\"fa fa-fw fa-graduation-cap\"></i></div>
+                      		<div class=\"nav-menu__text\"><span>At $ip,in $env,$date</span></div>
+                      </div>";
+			}
+			$state->finish;
+			
 	}
+	#get Algorithm problem count
+	my $state=$con->prepare("SELECT count(pr_path) FROM problem WHERE pr_group=\'algorithm\'");
+	$state->execute;
+	my @row=$state->fetchrow_array;
+	$algorithm_total=$row[0];
+	$state->finish;
+	#get DataStructure problem count
+	$state=$con->prepare("SELECT count(pr_path) FROM problem WHERE pr_group=\'datastructure\'");
+	$state->execute;
+	@row=$state->fetchrow_array;
+	$ds_total=$row[0];
+	$state->finish;
+	$con->disconnect;
 	my $mail_submenu;
 	foreach my $i(1..3){
 		$mail_submenu.="<li><a href=\"$side_menu_href[1][$i]\">$side_menu[1][$i]</a></li>";	
@@ -157,10 +246,10 @@ sub print_sidemenu($){
                   <div class="fa fa-fw fa-home"></div>
                 </div>
                 <div class="quickmenu__item">
-                  <div class="fa fa-fw fa-envelope-o"></div>
+                  <div class="fa fa-fw fa-desktop"></div>
                 </div>
-                <div class="quickmenu__item new">
-                  <div class="fa fa-fw fa-comments-o"></div>
+                <div class="quickmenu__item">
+                  <div class="fa fa-fw fa-user-plus"></div>
                 </div>
                 <div class="quickmenu__item">
                   <div class="fa fa-fw fa-feed"></div>
@@ -227,7 +316,7 @@ sub print_sidemenu($){
                   </li>
              
                   <li><a href="$contest_page">
-                      <div class="nav-menu__ico"><i class="fa fa-fw fa-dashcube"></i></div>
+                      <div class="nav-menu__ico"><i class="fa fa-fw fa-trophy"></i></div>
                       <div class="nav-menu__text"><span>Contest</span></div></a></li>
                   <li><a href="$submit_page">
                       <div class="nav-menu__ico"><i class="fa fa-fw fa-table"></i></div>
@@ -268,107 +357,60 @@ sub print_sidemenu($){
               </div>
               
               <div class="sidebar__menu">
-                <div class="sidebar__btn"><a href="compose.html" class="btn btn-block btn-default">Compose Mail</a></div>
-                <div class="sidebar__title">Mail</div>
+                <div class="sidebar__btn"><a href="$detail_view_href" class="btn btn-block btn-default">Detail View</a></div>
+                
+                <div class="sidebar__title">Classify</div>
                 <ul class="nav nav-menu">
-                  <li><a href="inbox.html">
+                  <li><a href="#">
                       <div class="nav-menu__ico"><i class="fa fa-fw fa-inbox"></i></div>
-                      <div class="nav-menu__text"><span>Inbox</span></div>
-                      <div class="nav-menu__right"><i class="badge badge-default"><b>2</b> / 100</i></div></a></li>
-                  <li><a href="sent.html">
+                      <div class="nav-menu__text"><span>Algorithm</span></div>
+                      <div class="nav-menu__right"><i class="badge badge-default"><b>$algorithm_solve</b> / $algorithm_total</i></div></a></li>
+                  <li><a href="#">
                       <div class="nav-menu__ico"><i class="fa fa-fw fa-upload"></i></div>
-                      <div class="nav-menu__text"><span>Sent</span></div>
-                      <div class="nav-menu__right"><i class="badge badge-default">30</i></div></a></li>
+                      <div class="nav-menu__text"><span>Data Structure</span></div>
+                      <div class="nav-menu__right"><i class="badge badge-default"><b>$ds_solve</b> / $ds_total</i></div></a></li>
                 </ul>
-                <div class="sidebar__title">Tags</div>
+                <div class="sidebar__title">Level</div>
                 <div class="ul nav nav-menu">
+                	<li><a href="inbox.html">
+                      <div class="nav-menu__ico tag_crazy"><i class="fa fa-fw fa-tag"></i></div>
+                      <div class="nav-menu__text"><span>Crazy</span></div>
+                      	<div class="nav-menu__right"><i class="badge badge-default"><b>$level_count[3]</b></i></div></a></li></a></li>
                   <li><a href="inbox.html">
                       <div class="nav-menu__ico tag_clients"><i class="fa fa-fw fa-tag"></i></div>
-                      <div class="nav-menu__text"><span>Clients</span></div></a></li>
+                      <div class="nav-menu__text"><span>Hard</span></div><div class="nav-menu__right"><i class="badge badge-default"><b>$level_count[2]</b></i></div></a></li>
                   <li><a href="inbox.html">
                       <div class="nav-menu__ico tag_social"><i class="fa fa-fw fa-tag"></i></div>
-                      <div class="nav-menu__text"><span>Social</span></div></a></li>
+                      <div class="nav-menu__text"><span>Normal</span></div><div class="nav-menu__right"><i class="badge badge-default"><b>$level_count[1]</b></i></div></a></li>
                   <li><a href="inbox.html">
                       <div class="nav-menu__ico tag_support"><i class="fa fa-fw fa-tag"></i></div>
-                      <div class="nav-menu__text"><span>Support</span></div></a></li>
+                      <div class="nav-menu__text"><span>Easy</span></div><div class="nav-menu__right"><i class="badge badge-default"><b>$level_count[0]</b></i></div></a></li>
+               
                 </div>
               </div>
               <div class="sidebar__menu">
-                <div class="sidebar__title">New Messages</div>
+                <div class="sidebar__title">Friends</div>
                 <div class="lm-widget">
                   <div class="lm-widget__list">
-                    <div class="lm-widget__item new">
-                      <div class="lm-widget__title"><i class="fa fa-fw fa-tag tag_support"></i><span>Support</span></div>
-                      <div class="lm-widget__text">Duis ac nibh. Fusce lacus purus, aliquet at, feugiat non, pretium quis.</div><a href="inbox.html" class="lm-widget__link"></a>
-                    </div>
-                    <div class="lm-widget__item new">
-                      <div class="lm-widget__title"><i class="fa fa-fw fa-tag tag_clients"></i><span>Stephen Olson</span></div>
-                      <div class="lm-widget__text">Nam ultrices, libero non mattis pulvinar, nulla pede ullamcorper augue.</div><a href="inbox.html" class="lm-widget__link"></a>
-                    </div>
+                    $friends
                   </div>
                 </div>
-                <div class="sidebar__title">Recent list</div>
-                <div class="lm-widget">
-                  <div class="lm-widget__list">
-                    <div class="lm-widget__item">
-                      <div class="lm-widget__title"><i class="fa fa-fw fa-tag tag_social"></i><span>Jesse Shaw</span></div>
-                      <div class="lm-widget__text">Nam ultrices, libero non mattis pulvinar.</div><a href="inbox.html" class="lm-widget__link"></a>
-                    </div>
-                    <div class="lm-widget__item">
-                      <div class="lm-widget__title"><i class="fa fa-fw fa-tag"></i><span>Mary Payne</span></div>
-                      <div class="lm-widget__text">Vivamus tortor. Duis mattis egestas metus.</div><a href="inbox.html" class="lm-widget__link"></a>
-                    </div>
-                    <div class="lm-widget__item">
-                      <div class="lm-widget__title"><i class="fa fa-fw fa-tag"></i><span>Bob Romero</span></div>
-                      <div class="lm-widget__text">Morbi porttitor lorem id ligula.</div><a href="inbox.html" class="lm-widget__link"></a>
-                    </div>
-                    <div class="lm-widget__item">
-                      <div class="lm-widget__title"><i class="fa fa-fw fa-tag tag_social"></i><span>Kevin Hosser</span></div>
-                      <div class="lm-widget__text">Libero non mattis pulvinar.</div><a href="inbox.html" class="lm-widget__link"></a>
-                    </div>
-                    <div class="lm-widget__item">
-                      <div class="lm-widget__title"><i class="fa fa-fw fa-tag tag_clients"></i><span>Perry Winter</span></div>
-                      <div class="lm-widget__text">Tortor. Duis mattis egestas metus.</div><a href="inbox.html" class="lm-widget__link"></a>
-                    </div>
-                    <div class="lm-widget__item">
-                      <div class="lm-widget__title"><i class="fa fa-fw fa-tag tag_support"></i><span>Ivan Nemirov</span></div>
-                      <div class="lm-widget__text">Portitor lorem id ligula.</div><a href="inbox.html" class="lm-widget__link"></a>
-                    </div>
-                    <div class="lm-widget__item">
-                      <div class="lm-widget__title"><i class="fa fa-fw fa-tag"></i><span>Jonny Fount</span></div>
-                      <div class="lm-widget__text">Lorem id ligula morbi porttitor .</div><a href="inbox.html" class="lm-widget__link"></a>
-                    </div>
-                    <div class="lm-widget__item">
-                      <div class="lm-widget__title"><i class="fa fa-fw fa-tag"></i><span>Hue Logan</span></div>
-                      <div class="lm-widget__text">Pulvinar libero non mattis.</div><a href="inbox.html" class="lm-widget__link"></a>
-                    </div>
-                    <div class="lm-widget__item">
-                      <div class="lm-widget__title"><i class="fa fa-fw fa-tag tag_clients"></i><span>Summer Gordon</span></div>
-                      <div class="lm-widget__text">Hattis tortor. Duis egestas metus.</div><a href="inbox.html" class="lm-widget__link"></a>
-                    </div>
-                    <div class="lm-widget__item">
-                      <div class="lm-widget__title"><i class="fa fa-fw fa-tag tag_support"></i><span>Sonya Blade</span></div>
-                      <div class="lm-widget__text">Itor lorem id ligula.</div><a href="inbox.html" class="lm-widget__link"></a>
-                    </div>
-                  </div>
-                </div>
+                
               </div>
               <div class="sidebar__menu">
-                <div class="sidebar__title">Recent activity</div>
+                <div class="sidebar__title">Recent Log</div>
                 <div class="ra-widget">
                   <div class="ra-widget__cont">
                     <div class="ra-widget__list">
-                      <div class="ra-widget__item ra-widget__item_user">
+                      <div class="ra-widget__item">
                         <div class="ra-widget__ico"><i class="fa fa-fw"></i></div>
                         <div class="ra-widget__info">
                           <div class="ra-widget__text"><a href='./'>Gary Long</a> has registered.<span class="ra-widget__date">09:20</span></div>
                         </div>
                       </div>
-                      <div class="ra-widget__item ra-widget__item_product">
-                        <div class="ra-widget__ico"><i class="fa fa-fw"></i></div>
-                        <div class="ra-widget__info">
-                          <div class="ra-widget__text">New product <a href='./'>Sony PlayStation 4</a>.<span class="ra-widget__date">10:08</span></div>
-                        </div>
+                      <div class="ra-widget__item">
+                      		<div class="nav-menu__ico"><i class="fa fa-fw fa-graduation-cap"></i></div>
+                      		<div class="nav-menu__text"><span>Yscec</span></div>
                       </div>
                       <div class="ra-widget__item ra-widget__item_order">
                         <div class="ra-widget__ico"><i class="fa fa-fw"></i></div>

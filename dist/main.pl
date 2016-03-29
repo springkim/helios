@@ -4,6 +4,7 @@ use warnings;
 use CGI;
 use DBI;
 use Array::Utils qw(:all);
+
 require '../login/aes.pl';	#must be require before info.pl
 require '../login/info.pl';
 require 'common_html.pl';
@@ -13,8 +14,13 @@ my $c_id=GetCookieId($q);
 
 #==============================WRITE PERL CGI==============================
 print $q->header(-charset=>"UTF-8");
-print_head();
+print_head($q);
 print '<body class="framed main-scrollable"><div class="wrapper">';
+
+
+
+
+
 print_header();
 print '<div class="dashboard">';
 

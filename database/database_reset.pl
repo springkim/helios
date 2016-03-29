@@ -21,6 +21,7 @@ sub CreateTable($){
 	my @query=$data =~/([^;]*)/g;
 	my $in;
 	foreach $in(@query){
+	#	print $in,"\n";
 		$con->do($in);
 	}
 }
@@ -35,34 +36,9 @@ DeleteUserPhoto();
 CreateTable($data);
 close(TEXT);
 #================================================================================
-#					엠블럼 초기화 부분.
-#================================================================================
-my $state = $con->prepare("SELECT eb_name FROM emblem");
-$state->execute();
-my @arr;
-while(my @row = $state->fetchrow_array){
-	foreach my $i (@row) {
-		push @arr,$i;	
-	}	
-}
-$state->finish();
-opendir( DIR, "../image/emblem" ) || die print $!;
-my @files = readdir(DIR);
-foreach my $elem ( 0 .. $#files ) {
-	if ( $files[$elem] ne '.' and $files[$elem] ne '..' ) {
-		my $eb_path = "image/emblem/" . $files[$elem];
-		$files[$elem] =~ /([a-z]+)./g;
-		my $eb_name = $1;
-		if(!grep{$_ eq $eb_name}@arr){
-			my $query   = "INSERT INTO emblem VALUES(\'$eb_name\',\'$eb_path\')";
-			$con->do($query);
-		}
-	}
-}
-#================================================================================
 #					문제 초기화.
 #================================================================================
-$state = $con->prepare("SELECT pr_path FROM problem");
+my $state = $con->prepare("SELECT pr_path FROM problem");
 $state->execute();
 my @garr;
 while(my @row = $state->fetchrow_array){
@@ -74,7 +50,7 @@ $state->finish();
 
 
 opendir( DIR, "../problem/problem_list" ) || die print $!;
-@files = readdir(DIR);
+my @files = readdir(DIR);
 foreach my $elem ( 0 .. $#files ) {
 	if ( $files[$elem] ne '.' and $files[$elem] ne '..' ) {
 		my $pr_path = "problem/problem_list/" . $files[$elem];

@@ -1459,6 +1459,9 @@ body.main-scrollable .main {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.tag_crazy{
+	color:#FF00DD;
+}
 .tag_clients {
   color: #ed4949;
 }

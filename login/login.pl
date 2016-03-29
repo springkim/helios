@@ -65,6 +65,7 @@ if ($id) {
 			my $bd = HTTP::BrowserDetect->new($q->user_agent());
 			my $env=$bd->browser_string(). ' '. $bd->public_version();
 			my $query = "INSERT INTO userlog VALUES(\'$id\',\'$date\',\'$ip\',\'$env\')";
+			
 			$con->do($query);
 			
 			$redirect_script='<script>window.location="../index.pl";</script>';

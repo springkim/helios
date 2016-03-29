@@ -23,8 +23,6 @@ sub execute($) {
 
 
 execute("SELECT * FROM userinfo");
-execute("SELECT * FROM emblem");
-execute("SELECT * FROM userinfo_emblem");
 execute("SELECT * FROM userlog");
 
 execute("SELECT * FROM problem");
@@ -32,4 +30,6 @@ execute("SELECT * FROM problem");
 execute("SELECT * FROM userinfo_problem");
 
 execute("SELECT * FROM notice ORDER BY nt_date DESC");
+
+execute("SELECT count(pr_path) FROM problem WHERE pr_group=\'algorithm\'");
 
