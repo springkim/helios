@@ -3,6 +3,8 @@ use warnings;
 use DBI;
 use HTTP::BrowserDetect qw( );
 require '../login/info.pl';
+require 'global_require.pl';
+require 'global_head.pl';
 my $title='Helios';	#page title
 
 my @side_menu;
@@ -14,57 +16,9 @@ $side_menu[1][0]="MailBox";$side_menu_href[1][0]="";
 	$side_menu[1][3]="Compose Mail";$side_menu_href[1][3]="mail/compose.pl";
 $side_menu[2][0]="Question";$side_menu_href[2][0]="question.pl";
 $side_menu[3][0]="User";$side_menu_href[3][0]="user.pl";
-sub GetTheme($){
-	my $id=shift;
-	if(!$id){
-		return 'css/right.dark.css';
-	}
-	my $theme='css/right.lilac.css';;	#dark,universe
-	my $con = DBI->connect( GetDB(), GetID(), GetPW() );
-	my $state=$con->prepare("SELECT ui_theme FROM userinfo WHERE ui_id=\'$id\'");
-	$state->execute;
-	my @row=$state->fetchrow_array;
-	if($row[0] eq 'dark'){
-		$theme='css/right.dark.css';
-	}elsif($row[0] eq 'lilac'){
-		$theme='css/right.lilac.css';
-	}
-	$con->disconnect;
-	return $theme;
-}
-#param q , id
-sub print_head($$){
-	my ($q,$id)=@_;
-	my $theme=GetTheme($id);
-	#my $bd = HTTP::BrowserDetect->new($q->user_agent());
-	#my $env=$bd->browser_string(). ' '. $bd->public_version();
-	$title=$id;
-	
-print <<EOF
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>$title</title>
-    <link rel="icon" type="image/png" href="img/favicon.png">
-    <link rel="apple-touch-icon-precomposed" href="img/apple-touch-favicon.png">
-    <link href="libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic" rel="stylesheet" type="text/css">
-    <link href="libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
-    <link href="libs/jquery.scrollbar/jquery.scrollbar.css" rel="stylesheet">
-    <link href="libs/ionrangeslider/css/ion.rangeSlider.css" rel="stylesheet">
-    <link href="libs/ionrangeslider/css/ion.rangeSlider.skinFlat.css" rel="stylesheet">
-    <link href="libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css" rel="stylesheet">
-    <link href="$theme" rel="stylesheet" class="demo__css">
-    <link href="css/demo.css" rel="stylesheet"><!--[if lt IE 9]>
-    
-    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
-  </head>
-EOF
-;
-}
+
+
+
 my $login_page="";
 my $logout_page="";
 my $problem_page="";
@@ -97,7 +51,7 @@ sub print_header($){
             </ul>
           </div>
         </div>
-        <div class="navbar-header"><a href="index.html" class="navbar-brand">
+        <div class="navbar-header"><a href="main.pl" class="navbar-brand">
             <div class="logo text-nowrap">
               <div class="logo__img"><i class="fa fa-chevron-right"></i></div><span class="logo__text">$title</span>
             </div></a></div>

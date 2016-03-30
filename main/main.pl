@@ -14,7 +14,7 @@ my $c_id=GetCookieId($q);
 
 #==============================WRITE PERL CGI==============================
 print $q->header(-charset=>"UTF-8");
-print_head($q,$c_id);
+print helios_html_head($q,$c_id);
 print '<body class="framed main-scrollable"><div class="wrapper">';
 
 
