@@ -52,7 +52,10 @@ create table userinfo_problem(
 	uip_srcpath varchar(512),
 	primary key(uip_srcpath,uip_date)
 );
-
+create table language_status(
+	ls_date varchar(512) primary key,
+	ls_language_amount text
+);
 create table userlog(
 	ui_id varchar(512) references userinfo(ui_id),
 	ul_date varchar(512),

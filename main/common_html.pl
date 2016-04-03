@@ -18,7 +18,6 @@ $side_menu[2][0]="Question";$side_menu_href[2][0]="question.pl";
 $side_menu[3][0]="User";$side_menu_href[3][0]="user.pl";
 
 
-
 my $login_page="";
 my $logout_page="";
 my $problem_page="";
@@ -524,8 +523,13 @@ sub print_js(){
     <script src="libs/ionrangeslider/js/ion.rangeSlider.min.js"></script>
     <script src="libs/inputNumber/js/inputNumber.js"></script>
     <script src="libs/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+    <script src="libs/raphael/raphael-min.js"></script>
+    <script src="libs/morris.js/morris.min.js"></script>
+    <script src="libs/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    
     <script src="js/main.js"></script>
     <script src="js/demo.js"></script>
+    
     
     <script src="common_html.js"></script>
 EOF
