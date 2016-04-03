@@ -2,11 +2,7 @@ create table userinfo(
 	ui_id varchar(512) primary key,
 	ui_pw varchar(512),
 	ui_name varchar(512),
-	ui_guild varchar(512),
-	ui_phone varchar(512),
 	ui_email varchar(512),
-	ui_level int,
-	ui_photo varchar(512),
 	ui_salt1 varchar(512),
 	ui_salt2 varchar(512),
 	ui_comment varchar(512),
@@ -42,7 +38,7 @@ create table problem(
 );
 create table userinfo_problem(
 	pr_path varchar(512) references problem(pr_path),
-	ui_id varchar(512) references userinfo(ui_),
+	ui_id varchar(512) references userinfo(ui_id),
 	uip_language varchar(512),
 	uip_time varchar(512),
 	uip_status text,
