@@ -10,8 +10,6 @@ create table userinfo(
 	ui_salt1 varchar(512),
 	ui_salt2 varchar(512),
 	ui_comment varchar(512),
-	ui_theme varchar(512),
-	ui_autologin boolean,
 	ui_savelog boolean,
 	ui_visit int
 );
@@ -44,7 +42,7 @@ create table problem(
 );
 create table userinfo_problem(
 	pr_path varchar(512) references problem(pr_path),
-	ui_id varchar(512) references userinfo(ui_id),
+	ui_id varchar(512) references userinfo(ui_),
 	uip_language varchar(512),
 	uip_time varchar(512),
 	uip_status text,
