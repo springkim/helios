@@ -3,19 +3,38 @@ use strict;
 use warnings;
 use CGI;
 use DBI;
-use Array::Utils qw(:all);
+use feature 'say';
+use Digest::SHA3 qw(sha3_512_hex);
+use Crypt::Salt;
 
 require '../../login/aes.pl';  #must be require before info.pl
 require '../../login/info.pl';
 my $q=new CGI;
-my $con = DBI->connect( GetDB(), GetID(), GetPW() );
+
 my $id=$q->param('ID');
-my $pw=$q->param('PW');
+my $pw=$q->param('EPW');
 my $name=$q->param('NAME');
 my $email=$q->param('EMAIL');
+my $salt1=$q->param('SALT1');
+open FP,">","test";
+print FP $id,"\n",$pw,"\n",$name,"\n",$email,"\n",$salt1,"\n";
+close FP;
+if($id ne "" && $pw ne "" && $name ne "" && $email ne "" && $salt1 ne ""){
+	my $con = DBI->connect( GetDB(), GetID(), GetPW() );	
+	my $salt2=salt(32);
+	say $q->redirect("../main.pl");
+	foreach my $i(0..777){
+		$pw=sha3_512_hex($salt2.$pw);
+	}
+	$con->do("INSERT INTO userinfo VALUES(\'$id\',\'$pw\',\'$name\',\'$email\',\'$salt1\',\'salt2\',\'한마디! 써주세요!\',TRUE,0)");
+	$con->do("INSERT INTO nonemail_certification VALUES(\'$id\')");
+	$con->disconnect;	
+	
+}
+
 #==============================WRITE PERL CGI==============================
 print $q->header(-charset=>"UTF-8");
-print <<EOF
+my $str='
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -31,12 +50,14 @@ print <<EOF
     <link href="../libs/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
     <link href="../css/right.dark.css" rel="stylesheet" class="demo__css">
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-     <script src="signup.js"></script>
+    <script src="sha/sha3.js"></script>
+	 <script src="sha/pbkdf2.js"></script>
+    <script src="signup.js"></script>
     <style>
     .signup__logo {
     	height: 175px;
     	margin-bottom: 20px;
-    	background: url('../img/logo.png') 50% top no-repeat;
+    	background: url("../img/logo.png") 50% top no-repeat;
     	background-size: contain;
 	}
     </style>
@@ -49,7 +70,7 @@ print <<EOF
     <div class="main" style="margin-left:0px;padding-left:0px;margin-bottom:0px;">
      <div class="main__scroll scrollbar-macosx "style="height : 100%;min-height:100%">
       <div class="login" style="background-color:rgba(0,0,0,0)">
-        <form action="signup.pl" class="login__form">
+        <form id="SIGNUPFORM" action="signup.pl" class="login__form" method="post" ENCTYPE="multipart/form-data">
           <div class="signup__logo"></div> 
            <div class="form-group has-feedback" id="ID_EDITBOX">
                       <label class="control-label">Your best id</label>
@@ -58,7 +79,7 @@ print <<EOF
                       	
                       	<div class="template template__modals" style="display:inline"><div class="template__modal" style="display:inline">
                                 
-                              <button id="checkid" type="button" data-toggle="modal" data-target="#modal3" class="btn btn-info" style="float:right">Check</button>
+                              <button id="checkid" type="button" data-toggle="modal" data-target="#modal1" class="btn btn-info" style="float:right">Check</button>
                          </div></div>
                       </div>
                       
@@ -67,61 +88,94 @@ print <<EOF
                       
 			</div>
 			
-           <div class="form-group  has-feedback">
+           <div class="form-group  has-feedback" id="PW_EDITBOX">
                       <label class="control-label">Safety password</label>
-                      <div class="form-group"><input type="text"  id="PW" name="PW" maxlength="64" class="form-control"></div>
+                      <div class="form-group"><input type="password"  id="PW" name="PW" maxlength="64" class="form-control"></div>
                       <span class="glyphicon form-control-feedback"></span>
 			</div>
-			<div class="form-group  has-feedback">
+			<div class="form-group  has-feedback" id="CPW_EDITBOX">
                       <label class="control-label">Confirm password</label>
-                      <div class="form-group"><input type="text"  id="CPW" name="CPW" maxlength="64" class="form-control"></div>
+                      <div class="form-group"><input type="password"  id="CPW" name="CPW" maxlength="64" class="form-control"></div>
                       <span class="glyphicon form-control-feedback"></span>
 			</div>
-			<div class="form-group  has-feedback">
+			<div class="form-group  has-feedback" id="NAME_EDITBOX">
                       <label class="control-label">Your name</label>
                       <div class="form-group"><input type="text"  id="NAME" name="NAME" maxlength="64" class="form-control"></div>
                       <span class="glyphicon form-control-feedback"></span>
 			</div>
-          <div class="form-group  has-feedback">
+          <div class="form-group  has-feedback" id="EMAIL_EDITBOX">
                       <label class="control-label">Your e-mail</label>
                       <div class="form-group" >
                       	<input style="width:75%;display:inline" type="text"  id="EMAIL" name="EMAIL" maxlength="64" class="form-control">
-                      	<button type="button" class="btn btn-info" style="float:right">Check</button>
+                      	
+                      	<div class="template template__modals" style="display:inline"><div class="template__modal" style="display:inline">
+                                
+                              <button id="checkemail" type="button" data-toggle="modal" data-target="#modal2" class="btn btn-info" style="float:right">Check</button>
+                         </div></div>
                       </div>
+                      
+                      <span class="glyphicon form-control-feedback"></span>
                       
                       <span class="glyphicon form-control-feedback"></span>
                       
                       
 			</div>
-          
-          <div class="form-group login__action">
-            <div class="login__submit">
-              <button type="submit" class="btn btn-default" style="margin-top:10px">Sign up</button>
-            </div>
+			<div style="display:none">
+          <input type="submit" id="SUBMIT_BTN" value=""></input>
           </div>
+          <input type="hidden" id="SALT1" name="SALT1" value=""></input>
+          <input type="hidden" id="EPW" name="EPW" value="" maxlength="500"></input>
+         <button id="signup" class="btn btn-default" style="margin-top:10px;margin-bottom:10px;float:right">Sign up</button>
+            
         </form>
       </div>
     </div>
     </div>
     
+    <div style="display:none">
+    <div class="template template__modals" style="display:inline"><div class="template__modal" style="display:inline">                           
+    <button id="SIGNUPDLG" type="check" data-toggle="modal" data-target="#modal3" class="btn btn-info" style="float:right">Check</button>
+    </div></div></div>
     
     
-    
-    
-    <div id="modal3" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">
+    <div id="modal1" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">
     <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button>
     <h4 class="modal-title">user id overlap check</h4></div>
     <div class="modal-body">
     <div role="alert" class="alert alert-danger" id="IDCHECK_DIALOG_COLOR">
-    <h4><i class="alert-ico fa fa-fw fa-ban" id="IDCHECK_DIALOG"></i><strong id="IDCHECK_TITLE"><strong>Fail</strong></strong></h4>Change a few things up and try submitting again.
+    <h4><i class="alert-ico fa fa-fw fa-ban" id="IDCHECK_DIALOG"></i><strong id="IDCHECK_TITLE"><strong>Fail</strong></strong></h4>
+    <strong id="IDCHECK_COMMENT"><h5>Hello, World</h5></strong>
     </div>
     </div>
     <div class="modal-footer">
     <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
     </div></div></div></div>
     
+    <div id="modal2" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">
+    <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">user email overlap check</h4></div>
+    <div class="modal-body">
+    <div role="alert" class="alert alert-danger" id="EMAILCHECK_DIALOG_COLOR">
+    <h4><i class="alert-ico fa fa-fw fa-ban" id="EMAILCHECK_DIALOG"></i><strong id="EMAILCHECK_TITLE"><strong>Fail</strong></strong></h4>
+    <strong id="EMAILCHECK_COMMENT"><h5>return 0;</h5></strong>
+    </div>
+    </div>
+    <div class="modal-footer">
+    <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+    </div></div></div></div>
     
-    
+    <div id="modal3" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">
+    <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">sign up error!!</h4></div>
+    <div class="modal-body">
+    <div role="alert" class="alert alert-danger" id="SIGNUP_DIALOG_COLOR">
+    <h4><i class="alert-ico fa fa-fw fa-ban" id="SIGNUP_DIALOG"></i><strong id="SIGNUP_TITLE"><strong>Fail</strong></strong></h4>
+    <strong id="SIGNUP_COMMENT"><h5>stdio</h5></strong>
+    </div>
+    </div>
+    <div class="modal-footer">
+    <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+    </div></div></div></div>
     
     
     
@@ -156,7 +210,7 @@ print <<EOF
     <script src="../js/demo.js"></script>
   </body>
 </html>
+';
+$str=~s/\s+/ /g;
+say $str;
 
-EOF
-;
-$con->disconnect;

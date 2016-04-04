@@ -9,6 +9,9 @@ create table userinfo(
 	ui_savelog boolean,
 	ui_visit int
 );
+create table nonemail_certification(
+	ui_id varchar(512) references userinfo(ui_id)
+);
 create table userdateinfo(
 	ui_id varchar(512) references userinfo(ui_id),
 	udi_optday int,

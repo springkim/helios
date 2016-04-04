@@ -6,11 +6,11 @@ use DBI;
 use feature 'say';
 require '../../login/info.pl';
 my $q=new CGI;
-my $id=$q->param('ID');
+my $email=$q->param('EMAIL');
 print $q->header(-charset=>"UTF-8");
-if($id ne ""){
+if($email ne ""){
 	my $con = DBI->connect( GetDB(), GetID(), GetPW() );
-	my $state=$con->prepare("SELECT count(ui_id) FROM userinfo WHERE ui_id=\'$id\'");
+	my $state=$con->prepare("SELECT count(ui_email) FROM userinfo WHERE ui_email=\'$email\'");
 	$state->execute;
 	my @row=$state->fetchrow_array;
 	print $row[0];

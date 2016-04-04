@@ -24,6 +24,7 @@ sub execute($) {
 
 
 execute("SELECT * FROM userinfo");
+execute("SELECT * FROM nonemail_certification");
 execute("SELECT * FROM userlog");
 
 execute("SELECT * FROM problem");
