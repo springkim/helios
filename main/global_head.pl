@@ -34,6 +34,8 @@ sub helios_html_head($$){
 		    <link href="libs/jquery.scrollbar/jquery.scrollbar.css" rel="stylesheet">
 		    <link href="libs/ionrangeslider/css/ion.rangeSlider.css" rel="stylesheet">
 		    <link href="libs/ionrangeslider/css/ion.rangeSlider.skinFlat.css" rel="stylesheet">
+		     <link href="libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css" rel="stylesheet">
+		    <link href="libs/morris.js/morris.css" rel="stylesheet">
 		    <link href="libs/bootstrap-switch/dist/css/bootstrap3/bootstrap-switch.min.css" rel="stylesheet">'
 		    ."<link href=\"$theme\" rel=\"stylesheet\" class=\"demo__css\">".
 		    '<link href="css/demo.css" rel="stylesheet"><!--[if lt IE 9]>

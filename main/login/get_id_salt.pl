@@ -4,17 +4,21 @@ use warnings;
 use CGI;
 use DBI;
 use feature 'say';
+use Crypt::Salt;
 require '../../login/info.pl';
 my $q=new CGI;
 my $id=$q->param('ID');
 print $q->header(-charset=>"UTF-8");
 if($id ne ""){
 	my $con = DBI->connect( GetDB(), GetID(), GetPW() );
-	my $state=$con->prepare("SELECT count(ui_id) FROM userinfo WHERE ui_id=\'$id\'");
+	my $state=$con->prepare("SELECT ui_salt1 FROM userinfo WHERE ui_id=\'$id\'");
 	$state->execute;
-	
 	my @row=$state->fetchrow_array;
-	print $row[0];
+	if($#row>=0){
+		print $row[0];
+	}else{
+		print salt(64);	
+	}
 	$con->disconnect;
 }else{
 	my $str='

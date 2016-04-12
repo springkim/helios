@@ -18,8 +18,9 @@ $side_menu[2][0]="Question";$side_menu_href[2][0]="question.pl";
 $side_menu[3][0]="User";$side_menu_href[3][0]="user.pl";
 
 
-my $login_page="";
-my $logout_page="";
+my $login_page="login/login.pl";
+my $logout_page="login/logout.pl";
+my $signup_page="login/signup.pl";
 my $problem_page="";
 my $contest_page="http://www.naver.com";
 my $submit_page="http://www.google.com";
@@ -45,8 +46,8 @@ sub print_header($){
           <div class="header-navbar-mobile__title"><span>$mobile_title</span></div>
           <div class="header-navbar-mobile__settings dropdown"><a href="" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" class="btn dropdown-toggle"><i class="fa fa-power-off"></i></a>
             <ul class="dropdown-menu dropdown-menu-right">
-            	<li><a href="#">Sign Up</a></li>
-                <li><a href="$href">$text</a></li>
+            	<li><a href="$signup_page">Sign Up</a></li>
+              <li><a href="$href">$text</a></li>
             </ul>
           </div>
         </div>
@@ -92,7 +93,7 @@ sub print_header($){
           <ul class="userbar nav navbar-nav">
             <li class="dropdown"><a href="" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" class="userbar__settings dropdown-toggle"><i class="fa fa-power-off"></i></a>
               <ul class="dropdown-menu dropdown-menu-right">
-                <li><a href="#">Sign Up</a></li>
+                <li><a href="$signup_page">Sign Up</a></li>
                 <li><a href="$href">$text</a></li>
               </ul>
             </li>
@@ -181,7 +182,7 @@ sub print_sidemenu($){
                     </div>";
 			}
 			$state->finish;
-			$state=$con->prepare("SELECT ul_ip,ul_env,ul_date FROM userlog WHERE ui_id=\'$id\'");
+			$state=$con->prepare("SELECT ul_ip,ul_env,ul_date FROM userlog WHERE ui_id=\'$id\' ORDER BY ul_date DESC");
 			$state->execute;
 			while(my $row=$state->fetchrow_hashref){
 				my $ip=$row->{ul_ip};
@@ -478,6 +479,7 @@ sub print_sidemenu($){
             </div>
           </div>
         </div>
+        </div>
 EOF
 ;
 }
@@ -533,6 +535,6 @@ sub print_js(){
     
     <script src="common_html.js"></script>
 EOF
-	;	
+;	
 }
 1;

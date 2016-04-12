@@ -12,14 +12,6 @@ create table userinfo(
 create table nonemail_certification(
 	ui_id varchar(512) references userinfo(ui_id)
 );
-create table userdateinfo(
-	ui_id varchar(512) references userinfo(ui_id),
-	udi_optday int,
-	udi_visit int,
-	udi_solve int,
-	udi_rank int,
-	primary key(ui_id,udi_optday)
-);
 create table admin(
 	ui_id varchar(512) references userinfo(ui_id)
 );
@@ -49,10 +41,6 @@ create table userinfo_problem(
 	uip_srcpath varchar(512),
 	primary key(uip_srcpath,uip_date)
 );
-create table language_status(
-	ls_date varchar(512) primary key,
-	ls_language_amount text
-);
 create table userlog(
 	ui_id varchar(512) references userinfo(ui_id),
 	ul_date varchar(512),
@@ -60,16 +48,10 @@ create table userlog(
 	ul_env varchar(512)
 );
 create table notice(
+	nt_optday serial primary key,
 	nt_date varchar(512),
 	nt_title text,
-	nt_content text,
-	primary key(nt_title)
-);
-create table notice_comment(
-	nc_date varchar(512) primary key,
-	nt_title text references notice(nt_title),
-	ui_id varchar(512) references userinfo(ui_id),
-	nc_comment text
+	nt_content text
 );
 create table question(
 	ui_id varchar(512) references userinfo(ui_id),
@@ -83,4 +65,17 @@ create table favorite(
 	ui_id varchar(512) references userinfo(ui_id),
 	fa_title varchar(512),
 	fa_link text
+);
+create table userdateinfo(
+	ui_id varchar(512) references userinfo(ui_id),
+	udi_optday int,
+	udi_visit int,
+	udi_solve int,
+	udi_rank int,
+	primary key(ui_id,udi_optday)
+);
+create table language_status(
+	ls_optday serial primary key,
+	ls_date varchar(512),
+	ls_language text
 );

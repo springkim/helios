@@ -38,11 +38,12 @@ $("#savelog").on('switchChange.bootstrapSwitch',function(){
 			}
 		})
 	}else{
+		alert('what');
 		$.ajax({
 			url:'ajax/set_savelog.pl',
 			data:{"id":$('#userid').val(),"TF":"0"},
 			success:function(){
-				$(location).attr('href','../login/logout.pl');
+				$(location).attr('href','login/logout.pl');
 			}
 		})
 	}
