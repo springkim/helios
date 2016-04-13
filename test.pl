@@ -8,25 +8,32 @@ my $q=new CGI;
 my $con = DBI->connect( GetDB(), GetID(), GetPW() );
 
 
-my $id='root2';
-my $pw='1234';
+my $id='root';
+my $pw='41449ed8e25276b03b998bb5ac88797a041d6400a5b6f009255922e45af31d577c6dae98bdda3c26ae4c143c789cae9f0617f45392754db38eb349aa64c7fe02';
 my $name='kimbom';
 my $email='springnode@gmail.com';
-my $salt1='asdasdasdaaddsd';
-$con->do("INSERT INTO userinfo VALUES(\'$id\',\'$pw\',\'$name\',\'$email\',\'$salt1\',\'salt2\',\'한마디! 써주세요!\',TRUE,0)");
+my $salt1='edc8c640d14a66cde80017bf74c1c36807f3f6d41fc023224f7dd04c1344a09a';
+my $salt2='vLbkj1JSTyY49QxvnBVtyafPXaRZyFiA';
+$con->do("INSERT INTO userinfo VALUES(\'$id\',\'$pw\',\'$name\',\'$email\',\'$salt1\',\'$salt2\',\'한마디! 써주세요!\',TRUE,0)");
 $con->do("INSERT INTO nonemail_certification VALUES(\'$id\')");
-$con->do("INSERT INTO userinfo_problem VALUES(\'problem/problem_list/e0001.html\',\'$id\',\'C\',\'0.00\',\'accepted\',\'4/30\',\'1\')");
+
 my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime;
 $mon+=1;
 $year+=1900;
-$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-15\',\'C 100;C++ 21;Perl 0;Pascal 2;PHP 47\')");
-$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-16\',\'C 200;C++ 61;Perl 1;Pascal 3;PHP 47\')");
-$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-17\',\'C 250;C++ 81;Perl 2;Pascal 120;PHP 80\')");
-$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-18\',\'C 300;C++ 121;Perl 2;Pascal 323;PHP 90\')");
-$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-19\',\'C 400;C++ 151;Perl 3;Pascal 323;PHP 120\')");
-$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-20\',\'C 500;C++ 199;Perl 7;Pascal 323;PHP 240\')");
-$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-21\',\'C 555;C++ 218;Perl 9;Pascal 323;PHP 480\')");
-$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-22\',\'C 666;C++ 301;Perl 11;Pascal 323;PHP 500\')");
+my $uip_date="$year-$mon-$mday-$hour-$min-$sec";
+my $h2=$hour+1;
+my $uip_date2="$year-$mon-$mday-$h2-$min-$sec";
+$con->do("INSERT INTO userinfo_problem VALUES(\'problem/problem_list/e0001.html\',\'$id\',\'C\',\'0.28\',\'accepted\',\'$uip_date\',\'test/main.c\')");
+$con->do("INSERT INTO userinfo_problem VALUES(\'problem/problem_list/e0002.html\',\'$id\',\'Perl\',\'0.00\',\'wait\',\'$uip_date2\',\'test/main.pl\')");
 
-$con->do("INSERT INTO notice VALUES(default,\'$year-$mon-19\',\'헬리오스가 오픈했습니다.\',\'안녕하십니까. 헬리오스가 오픈하였습니다 ㅎㅎ 많이많이 문제를 풀어 주세요.\')");
+$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-15\',\'C 100;C++ 21;Perl 0;Pascal 2;PHP 47\')");
+$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-16\',\'C 120;C++ 161;Perl 1;Pascal 3;PHP 47\')");
+$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-17\',\'C 120;C++ 181;Perl 2;Pascal 120;PHP 80\')");
+$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-18\',\'C 200;C++ 191;Perl 43;Pascal 130;PHP 90\')");
+$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-19\',\'C 400;C++ 151;Perl 56;Pascal 140;PHP 120\')");
+$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-20\',\'C 500;C++ 199;Perl 92;Pascal 140;PHP 240\')");
+$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-21\',\'C 555;C++ 218;Perl 120;Pascal 140;PHP 480\')");
+$con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-22\',\'C 666;C++ 301;Perl 113;Pascal 140;PHP 500\')");
+
+$con->do("INSERT INTO notice VALUES(default,\'$year-$mon-19\',\'시험용 공지입니다.\',\'안녕하십니까. 김봄은 코딩을 합니다.ㅠ\')");
 $con->disconnect;

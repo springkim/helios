@@ -11,6 +11,7 @@ require 'common_html.pl';
 require 'language_rank.pl';
 require 'overview.pl';
 require 'notice.pl';
+require 'submit_result.pl';
 my $q=new CGI;
 my $con = DBI->connect( GetDB(), GetID(), GetPW() );
 my $c_id=GetCookieId($q);
@@ -27,6 +28,7 @@ print_sidemenu($c_id);
 my $language_graph=print_language_graph();
 my $overview=print_overview();
 my $notice=print_notice();
+my $submit_result=print_submit_result($c_id);
 print <<EOF
 <div class="main">
           <div class="main__scroll scrollbar-macosx">
@@ -56,48 +58,7 @@ print <<EOF
                   </div>
                   <div class="row">
                     	$notice
-                    <div class="col-md-4">
-                      <div class="panel panel-danger">
-                        <div class="panel-heading panel-heading_label">
-                          <h3 class="panel-title">Submit result</h3>
-                          <div class="label label-danger">2</div>
-                        </div>
-                        <div class="sp-widget">
-                          <div class="sp-widget__wrap scrollable scrollbar-macosx">
-                            <div class="sp-widget__cont">
-                              <div class="sp-widget__top">
-                                <div class="sp-widget__info">
-                                  <div class="sp-widget__title"><i class="fa fa-envelope-o"></i><span>2 New Messages</span></div>
-                                </div>
-                                <div class="sp-widget__all"><a href="inbox.html" class="btn btn-default btn-block">Show All</a></div>
-                              </div>
-                              <div class="sp-widget__list">
-                                <div class="sp-widget__item">
-                                  <div class="sp-widget__user"><a href="./">Carol Burton</a><span class="sp-widget__date">, 18:06 pm</span></div>
-                                  <div class="sp-widget__text">Etiam faucibus cursus urna. Ut tellus. Nulla ut erat id mauris vulputate elementum. Nullam varius.</div>
-                                </div>
-                                <div class="sp-widget__item">
-                                  <div class="sp-widget__user"><a href="./">Judy Shaw</a><span class="sp-widget__date">, 11:38 pm</span></div>
-                                  <div class="sp-widget__text">Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.</div>
-                                </div>
-                                <div class="sp-widget__item">
-                                  <div class="sp-widget__user"><a href="./">Angela Kennedy</a><span class="sp-widget__date">, 13:03 pm - 01.09.2016</span></div>
-                                  <div class="sp-widget__text">Vivamus vel nulla eget eros elementum pellentesque. Quisque porta volutpat erat.</div>
-                                </div>
-                                <div class="sp-widget__item">
-                                  <div class="sp-widget__user"><a href="./">Larry Cole</a><span class="sp-widget__date">, 15:10 pm - 01.08.2016</span></div>
-                                  <div class="sp-widget__text">Etiam faucibus cursus urna. Ut tellus. Nulla ut erat id mauris vulputate elementum. Nullam varius.</div>
-                                </div>
-                                <div class="sp-widget__item">
-                                  <div class="sp-widget__user"><a href="./">Wanda Watson</a><span class="sp-widget__date">, 09:18 pm - 01.08.2016</span></div>
-                                  <div class="sp-widget__text">Praesent blandit. Nam nulla. Integer pede justo, lacinia eget, tincidunt eget, tempus vel, pede.</div>
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+                   	$submit_result
                     
                   </div>
                 </div>
