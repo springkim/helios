@@ -53,7 +53,7 @@ print <<EOF
               <div class="container-fluid half-padding">
                 <div class="pages pages_dashboard">
                   <div class="row">
-                    $language_graph
+                   		$language_graph
                     $overview
                   </div>
                   <div class="row">
@@ -69,13 +69,16 @@ print <<EOF
 EOF
 ;
 ##################################################################################
-print '</div></div>';
+print '</div></div></div>';
 
 #print_demo();
+
 print_js();
+print_graph_js();
+
 print '<script src="libs/morris.js/morris.min.js"></script>';
 ###############################
-print_graph_js();
+
 ###############################
-print '</div></body></html>';
+print '</body></html>';
 $con->disconnect;

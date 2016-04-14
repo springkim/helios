@@ -92,7 +92,7 @@ sub print_graph_js(){
 	}
 	$cdata=substr($cdata,0,length($cdata)-1);
 	#==============
-  my $str= '<script>$(document).ready(function() {
+  my $str= '<script type="text/javascript">$(document).ready(function() {
   if ($(".pages_dashboard").length) {'.$date_str.'
     
     if ($(".ld-widget-main__chart").length) {

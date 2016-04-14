@@ -20,6 +20,21 @@ $con->do("INSERT INTO nonemail_certification VALUES(\'$id\')");
 my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime;
 $mon+=1;
 $year+=1900;
+if(length($mon)==1){
+		$mon='0'.$mon;	
+	}
+	if(length($mday)==1){
+		$mday='0'.$mday;	
+	}
+	if(length($hour)==1){
+		$hour='0'.$hour;
+	}
+	if(length($min)==1){
+		$min='0'.$min;
+	}
+	if(length($sec)==1){
+		$sec='0'.$sec;
+	}
 my $uip_date="$year-$mon-$mday-$hour-$min-$sec";
 my $h2=$hour+1;
 my $uip_date2="$year-$mon-$mday-$h2-$min-$sec";
