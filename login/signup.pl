@@ -31,6 +31,7 @@ my $upload_file = $q->param('FILE');
 my $salt        = $q->param('HSALT');
 #$id='root';$pw='root';$name='root';$guild='root';$phone='1234';$email='root';$salt='abvs';
 my $ids = "";    #데이터베이스의 아이디 목록입니다.
+
 #==============================회원가입을 완료했을때 호출됩니다..==============================
 if ($id) {
 	$upload_file =~ m<.+\.(\w+)?$>;    #확장자를 추출합니다.
@@ -41,7 +42,7 @@ if ($id) {
 	my $query = "INSERT INTO userinfo values(\'$id\',\'$pw\',\'$name\',\'$guild\',\'$phone\',\'$email\',\'$photo_path\',\'0\',\'$salt\',\'$p_salt\')";
 	$con->do($query);
 	$con->disconnect();
-	print $q->redirect('login.pl');
+	#print $q->redirect('login.pl');
 }
 else {
 	my $query = "SELECT ui_id FROM userinfo";

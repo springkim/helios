@@ -84,10 +84,7 @@ sub GetLocalTime(){
 	return $date;
 }
 #=============database subroutine========================
-sub insert_notice($$$){
-	my ($id,$title,$content)=@_;
-		
-}
+
 
 #================================================================
 1;

@@ -24,10 +24,13 @@ sub print_overview(){
 	@row=$state->fetchrow_array;
 	my $submited=$row[0];
 	$state->finish;
-	$state=$con->prepare("SELECT count(DISTINCT pr_path) FROM userinfo_problem WHERE uip_status=\'accepted\'");
+	$state=$con->prepare("SELECT count(DISTINCT pr_optnum) FROM userinfo_problem WHERE uip_status=\'accepted\'");
 	$state->execute;
 	@row=$state->fetchrow_array;
-	my $conquest=($row[0]/$problem)*100;
+	my $conquest=0;
+	if($problem!=0){
+		$conquest=($row[0]/$problem)*100;
+	}
 	$state->finish;
 	my $str='<div class="col-md-3">
                       <div class="panel panel-success">

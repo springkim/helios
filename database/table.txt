@@ -23,16 +23,16 @@ create table friend(
 	ui_id2 varchar(512) references userinfo(ui_id)
 );
 create table problem(
-	pr_path varchar(260) primary key,
+	pr_optnum serial primary key,
 	pr_title varchar(128),
-	pr_level varchar(16),
+	pr_level varchar(32),
 	pr_group varchar(128),
-	pr_subgroup varchar(128),
 	pr_timelimit varchar(128),
-	pr_memlimit varchar(128)
+	pr_memlimit varchar(128),
+	pr_content text
 );
 create table userinfo_problem(
-	pr_path varchar(512) references problem(pr_path),
+	pr_optnum serial references problem(pr_optnum),
 	ui_id varchar(512) references userinfo(ui_id),
 	uip_language varchar(512),
 	uip_time varchar(512),

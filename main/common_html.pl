@@ -59,7 +59,7 @@ sub print_header($){
           <ul class="nav navbar-nav navbar-left">
            <li class="dropdown active"><a href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><span>Problem&nbsp;<i class="caret"></i></span></a>
               <ul class="dropdown-menu">
-                <li><a href="products.html"><span>All</span></a></li>
+                <li><a href="problem.pl?show_type=all"><span>All</span></a></li>
                 <li role="separator" class="divider"></li>
                 <li><a href="orders.html"><span>Easy</span></a></li>
                 <li><a href="orders.html"><span>Normal</span></a></li>
@@ -74,21 +74,10 @@ sub print_header($){
                 <li><a href="users.html"><span>DataStructure</span></a></li>
               </ul>
             </li>
-            <li><a href="$contest_page"><span>Contest</span></a></li>
             <li><a href="$submit_page"><span>Submit Result</span></a></li>
             <li><a href="$ranking_page"><span>Ranking</span></a></li>
-            <li><a href="$board_page"><span>Board</span></a></li>
             <li><a href="$knowledge_page"><span>Knowledge</span></a></li>
-            <li class="dropdown active"><a href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><span>Reference&nbsp;<i class="caret"></i></span></a>
-              <ul class="dropdown-menu">
-                <li><a href="https://www-s.acm.illinois.edu/webmonkeys/book/c_guide/"><span>C Reference</span></a></li>
-                <li><a href="http://www.cplusplus.com/reference/algorithm/"><span>C++ Reference</span></a></li>
-                <li><a href="http://perldoc.perl.org/perlref.html"><span>Perl Reference</span></a></li>
-                <li role="separator" class="divider"></li>
-               
-                
-              </ul>
-            </li>
+            
           </ul>
           <ul class="userbar nav navbar-nav">
             <li class="dropdown"><a href="" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" class="userbar__settings dropdown-toggle"><i class="fa fa-power-off"></i></a>
@@ -144,20 +133,20 @@ sub print_sidemenu($){
 			}
 			$state->finish;
 			#get Algorithm problem count
-			$state=$con->prepare("SELECT count(problem.pr_path) FROM userinfo_problem,problem WHERE pr_group=\'algorithm\' and ui_id=\'$id\'");
+			$state=$con->prepare("SELECT count(problem.pr_optnum) FROM userinfo_problem,problem WHERE problem.pr_optnum=userinfo_problem.pr_optnum and pr_group=\'algorithm\' and ui_id=\'$id\' and uip_status=\'accepted\'");
 			$state->execute;
 			@row=$state->fetchrow_array;
 			$algorithm_solve=$row[0];
 			$state->finish;
 			#get DataStructure problem count
-			$state=$con->prepare("SELECT count(problem.pr_path) FROM userinfo_problem,problem WHERE pr_group=\'datastructure\' and ui_id=\'$id\'");
+			$state=$con->prepare("SELECT count(problem.pr_optnum) FROM userinfo_problem,problem WHERE problem.pr_optnum=userinfo_problem.pr_optnum and pr_group=\'datastructure\' and ui_id=\'$id\' and uip_status=\'accepted\'");
 			$state->execute;
 			@row=$state->fetchrow_array;
 			$ds_solve=$row[0];
 			$state->finish;
 			#get level solve count
 			foreach my $i(0..3){
-				$state=$con->prepare("SELECT count(problem.pr_path) FROM userinfo_problem,problem WHERE pr_level=\'$i\' and ui_id=\'$id\'");
+				$state=$con->prepare("SELECT count(problem.pr_optnum) FROM userinfo_problem,problem WHERE problem.pr_optnum=userinfo_problem.pr_optnum and pr_level=\'$i\' and ui_id=\'$id\' and uip_status=\'accepted\'");
 				$state->execute;
 				@row=$state->fetchrow_array;
 				$level_count[$i]=$row[0];
@@ -231,13 +220,13 @@ sub print_sidemenu($){
 			$state->finish;
 	}
 	#get Algorithm problem count
-	my $state=$con->prepare("SELECT count(pr_path) FROM problem WHERE pr_group=\'algorithm\'");
+	my $state=$con->prepare("SELECT count(pr_optnum) FROM problem WHERE pr_group=\'algorithm\'");
 	$state->execute;
 	my @row=$state->fetchrow_array;
 	$algorithm_total=$row[0];
 	$state->finish;
 	#get DataStructure problem count
-	$state=$con->prepare("SELECT count(pr_path) FROM problem WHERE pr_group=\'datastructure\'");
+	$state=$con->prepare("SELECT count(pr_optnum) FROM problem WHERE pr_group=\'datastructure\'");
 	$state->execute;
 	@row=$state->fetchrow_array;
 	$ds_total=$row[0];
@@ -259,9 +248,11 @@ sub print_sidemenu($){
               	<div data-css=\"css/right.lilac.css\" title=\"Lilac\" class=\"demo__theme $theme_active[1] demo__theme_lilac\"></div>
             	  </div>";
 	print <<EOF
+	<div style="display:none">
 	<form method="post">
 		<input type="hidden" id="userid" value="$id"/>
 	</form>
+	</div>
 		<div class="sidebar">
           <div class="quickmenu">
             <div class="quickmenu__cont">
@@ -292,14 +283,7 @@ sub print_sidemenu($){
                   <li><a href="$side_menu_href[0][0]">
                       <div class="nav-menu__ico"><i class="fa fa-fw fa-star"></i></div>
                       <div class="nav-menu__text"><span>$side_menu[0][0]</span></div></a></li>          
-                  <li><a href="#">
-                      <div class="nav-menu__ico"><i class="fa fa-fw fa-envelope"></i></div>
-                      <div class="nav-menu__text"><span>$side_menu[1][0]</span></div>
-                      <div class="nav-menu__right"><i class="fa fa-fw fa-angle-right arrow"></i></div></a>
-                    <ul class="nav nav-menu__second collapse">
-                      $mail_submenu
-                    </ul>
-                  </li>
+                 
                   
                   <li><a href="$side_menu_href[2][0]">
                       <div class="nav-menu__ico"><i class="fa fa-fw fa-eye"></i></div>
@@ -432,26 +416,12 @@ sub print_sidemenu($){
                 </div>
               </div>
               <div class="sidebar__menu">
-                <div class="sidebar__title">Settings</div>
+                <div class="sidebar__title">Chart</div>
                 
                 <div class="ss-widget">
-                 $theme_select
+                
                   <div class="ss-widget__cont">
-                    <div class="ss-widget__row">
-                      <div class="ss-widget__cell">AutoLogin</div>
-                      <div class="ss-widget__cell">
-                     
-                        <input id="autologin" type="checkbox" $auto_login data-size="micro" data-on-color="success" data-off-color="danger" class="bs-switch">
-                       
-                        
-                      </div>
-                    </div>
-                    <div class="ss-widget__row">
-                      <div class="ss-widget__cell">Save Log</div>
-                      <div class="ss-widget__cell">
-                        <input id="savelog" type="checkbox" $save_log data-size="micro" data-on-color="success" data-off-color="danger" class="bs-switch">
-                      </div>
-                    </div>
+                    
                     
                 </div>
                 <div class="sidestat">
@@ -484,8 +454,14 @@ EOF
 ;
 }
 
-
-
+# <li><a href="#">
+##                      <div class="nav-menu__ico"><i class="fa fa-fw fa-envelope"></i></div>
+ #                     <div class="nav-menu__text"><span>$side_menu[1][0]</span></div>
+ #                     <div class="nav-menu__right"><i class="fa fa-fw fa-angle-right arrow"></i></div></a>
+ #                   <ul class="nav nav-menu__second collapse">
+ ##                     $mail_submenu
+  #                  </ul>
+  #                </li>
 
 
 

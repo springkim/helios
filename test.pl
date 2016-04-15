@@ -16,6 +16,7 @@ my $salt1='edc8c640d14a66cde80017bf74c1c36807f3f6d41fc023224f7dd04c1344a09a';
 my $salt2='vLbkj1JSTyY49QxvnBVtyafPXaRZyFiA';
 $con->do("INSERT INTO userinfo VALUES(\'$id\',\'$pw\',\'$name\',\'$email\',\'$salt1\',\'$salt2\',\'한마디! 써주세요!\',TRUE,0)");
 $con->do("INSERT INTO nonemail_certification VALUES(\'$id\')");
+$con->do("INSERT INTO superadmin VALUES(\'$id\')");
 
 my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime;
 $mon+=1;
@@ -38,8 +39,6 @@ if(length($mon)==1){
 my $uip_date="$year-$mon-$mday-$hour-$min-$sec";
 my $h2=$hour+1;
 my $uip_date2="$year-$mon-$mday-$h2-$min-$sec";
-$con->do("INSERT INTO userinfo_problem VALUES(\'problem/problem_list/e0001.html\',\'$id\',\'C\',\'0.28\',\'accepted\',\'$uip_date\',\'test/main.c\')");
-$con->do("INSERT INTO userinfo_problem VALUES(\'problem/problem_list/e0002.html\',\'$id\',\'Perl\',\'0.00\',\'wait\',\'$uip_date2\',\'test/main.pl\')");
 
 $con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-15\',\'C 100;C++ 21;Perl 0;Pascal 2;PHP 47\')");
 $con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-16\',\'C 120;C++ 161;Perl 1;Pascal 3;PHP 47\')");
