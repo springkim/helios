@@ -38,34 +38,39 @@ close(TEXT);
 #================================================================================
 #					문제 초기화.
 #================================================================================
-die;
-my $state = $con->prepare("SELECT pr_path FROM problem");
-$state->execute();
-my @garr;
-while(my @row = $state->fetchrow_array){
-	foreach my $i (@row) {
-		push @garr,$i;	
-	}	
-}
-$state->finish();
-
-
-opendir( DIR, "../problem/problem_list" ) || die print $!;
-my @files = readdir(DIR);
-foreach my $elem ( 0 .. $#files ) {
-	if ( $files[$elem] ne '.' and $files[$elem] ne '..' ) {
-		my $pr_path = "problem/problem_list/" . $files[$elem];
-		if(!grep{$_ eq $pr_path}@garr){	#not in database
-			open(FP,"<../$pr_path") or die $!;
-			$/=undef;
-			my $data=<FP>;
-			$data =~ /HIDDEN:::(.*):::/;
-			my @arr=split(',',$1);
-			close(FP);
-			my $query = "INSERT INTO problem VALUES(\'$pr_path\',\'$arr[0]\',\'$arr[1]\',\'$arr[2]\',\'$arr[3]\',\'$arr[4]\',\'$arr[5]\')";
-			$con->do($query);
+my $p_path="../main/problem_repository";
+opendir DIR,$p_path;
+my @dir=readdir(DIR);
+foreach my $elem(@dir){	#algorithm datastducture
+	if($elem ne '.' and $elem ne '..'){	
+		opendir DIR2,"$p_path/$elem";
+		my @dir2=readdir(DIR2);
+		foreach my $elem2(@dir2){	#basic dp other...
+			if($elem2 ne '.' and $elem2 ne '..'){
+				opendir DIR3,"$p_path/$elem/$elem2";
+				my @dir3=readdir(DIR3);
+				foreach my $elem3(@dir3){	#두 숫자 더하기...
+					if($elem3 ne '.' and $elem3 ne '..'and  $elem3 ne 'kimbom'){
+							open FP,'<',"$p_path/$elem/$elem2/$elem3/problem";
+							$/="\n";
+							my $title=<FP>;chomp($title);
+							my $class=<FP>;chomp($class);
+							my $level=<FP>;chomp($level);
+							my $tl=<FP>;chomp($tl);
+							my $ml=<FP>;chomp($ml);
+							my $type=<FP>;chomp($type);
+							$/=undef;
+							my $content=<FP>;
+							$con->do("INSERT INTO problem VALUES(default,\'$title\',\'$level\',\'$class\',\'$tl\',\'$ml\',\'$content\',\'$type\')");
+							close FP;
+					}
+				}
+				closedir DIR3;
+			}
 		}
+		closedir DIR2;	
 	}
 }
+closedir DIR;
 $con->disconnect;
 

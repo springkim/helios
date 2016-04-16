@@ -45,6 +45,7 @@ sub GetTheme($){
 			$theme='css/right.lilac.css';
 		}
 	}
+	$theme='css/right.dark.css';
 	return $theme;
 }
 sub say404(){

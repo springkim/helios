@@ -8,15 +8,10 @@ use File::Copy qw(copy);
 require '../login/aes.pl';	#must be require before info.pl
 require '../login/info.pl';
 require 'common_html.pl';
-require 'language_rank.pl';
-require 'overview.pl';
-require 'notice.pl';
-require 'submit_result.pl';
 my $q=new CGI;
 my $con = DBI->connect( GetDB(), GetID(), GetPW() );
-my $c_id=GetCookieId($q);
 
-my $debug='DEBUG';
+my $c_id=GetCookieId($q);
 if(isAdmin($c_id)){
 	
 	my $title=$q->param("title");
@@ -25,8 +20,9 @@ if(isAdmin($c_id)){
 	my $tl=$q->param("timelimit");
 	my $ml=$q->param("memorylimit");
 	my $content=$q->param("content");
-	my $infile=$q->param("inputfile3");
-	my $outfile=$q->param("outputfile3");
+	my $infile=$q->param('IFILE');
+	my $outfile=$q->param('OFILE');
+	my $type=$q->param('stype');
 	if($title ne '' && $class ne '' && $level ne '' && $tl ne '' && $ml ne '' && $content ne ''){
 		my $state=$con->prepare("SELECT count(*) FROM problem WHERE pr_title=\'$title\'");
 		$state->execute;
@@ -36,10 +32,23 @@ if(isAdmin($c_id)){
 				my $path="problem_repository/$class/$title";
 				mkdir $path;
 				chmod 0777,$path;
-				
+				$content=~s/'/"/g;	#단일 쿼터 제
+				open FP,'>',"$path/problem";
+				print FP $title,"\n";
+				print FP $class,"\n";
+				print FP $level,"\n";
+				print FP $tl,"\n";
+				print FP $ml,"\n";
+				print FP $type,"\n";
+				print FP $content,"\n";
+				close FP;
 				copy($infile,"$path/in.txt");
 				copy($outfile,"$path/out.txt");
-				#$con->do("INSERT INTO problem VALUES(default,\'$title\',\'$level\',\'$class\',\'$tl\',\'$ml\',\'$content\')");	
+				if($type eq 'topcoder'){
+					my $mfile=$q->param("MAINFILE");
+					copy($outfile,"$path/main.c");
+				}
+				$con->do("INSERT INTO problem VALUES(default,\'$title\',\'$level\',\'$class\',\'$tl\',\'$ml\',\'$content\',\'$type\')");	
 						
 		}else{
 			print $q->redirect('main.pl');
@@ -50,7 +59,6 @@ print $q->header(-charset=>"UTF-8");
 print helios_html_head($q,$c_id);
 print '<body class="framed main-scrollable"><div class="wrapper">';
 
-print $debug;
 
 print_header($c_id);
 print '<div class="dashboard">';
@@ -92,7 +100,7 @@ print <<EOF
                 </div>
                 
               </div>
-              <form method="post" action="admin_new_problem.pl">
+              <form method="post" action="admin_new_problem.pl" ENCTYPE="multipart/form-data">
               <div class="container-fluid half-padding">
                 <div class="template template__controls">
                   <div class="row">
@@ -162,7 +170,7 @@ print <<EOF
                               <div class="col-sm-10">
                                 <button type="submit" id="inputfile" class="btn btn-default">Upload input file</button>
                                 <input type="text" readonly="readonly" id="inputfile2" name="inputfile2" placeholder="--" class="form-control">
-                                <input type="file" style="display:none" id="inputfile3" name="inputfile3" ></input>
+                                <input type="file" style="display:none" id="inputfile3" name="IFILE" ></input>
                               </div>
                             </div>
                             	<div class="form-group">
@@ -170,10 +178,26 @@ print <<EOF
                               <div class="col-sm-10">
                                 <button type="submit" id="outputfile" class="btn btn-default">Upload output file</button>
                                 <input type="text" readonly="readonly" id="outputfile2" name="outputfile2" placeholder="--" class="form-control">
-                                <input type="file" style="display:none" id="outputfile3" name="outputfile3" ></input>
+                                <input type="file" style="display:none" id="outputfile3" name="OFILE" ></input>
                               </div>
                             </div>
-                            
+                            <div class="form-group">
+                              <label class="col-sm-2 control-label">Submit Type</label>
+                              <div class="col-sm-10">
+                                <select placeholder="Select" id="stype" name="stype" class="selectpicker form-control">
+                                  		<option>acm</option>
+                                  		<option>topcoder</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div class="form-group" id="MFILE" style="display:none">
+                              <label class="col-sm-2 control-label">Output file</label>
+                              <div class="col-sm-10">
+                                <button type="submit" id="mfile" class="btn btn-default">Upload main file</button>
+                                <input type="text" readonly="readonly" id="mfile2" name="mfile2" placeholder="--" class="form-control">
+                                <input type="file" style="display:none" id="mfile3" name="MAINFILE" ></input>
+                              </div>
+                            </div>
                             <div class="form-group">
                               <label class="col-sm-2 control-label">Create</label>
                               <div class="col-sm-10">
@@ -242,6 +266,20 @@ $(document).ready(function(){
 	})
 	$("#outputfile3").change(function(){
 		$("#outputfile2").val($("#outputfile3").val());
+	})
+	$("#stype").change(function(){
+		if($("#stype").val()=="acm"){
+			$("#MFILE").css("display","none");
+		}else if($("#stype").val()=="topcoder"){
+			$("#MFILE").css("display","block");
+		}
+	})
+	$("#mfile").click(function(){
+		$("#mfile3").click();
+		return false;
+	})
+	$("#mfile3").change(function(){
+		$("#mfile2").val($("#mfile3").val());
 	})
 });
 </script>';

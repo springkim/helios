@@ -1,3 +1,2 @@
-0C1000
-C++4321
-Perl32
+2 C main.c2 C main.c
+INSERT INTO userinfo_problem VALUES(default,'root','C','0','wait','2016.04.15. 20:17:47','user_source/root-2016.04.15.20:17:47.c')

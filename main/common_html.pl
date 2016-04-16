@@ -23,8 +23,8 @@ my $logout_page="login/logout.pl";
 my $signup_page="login/signup.pl";
 my $problem_page="";
 my $contest_page="http://www.naver.com";
-my $submit_page="http://www.google.com";
-my $ranking_page="http://www.daum.net";
+my $submit_page="submit.pl";
+my $ranking_page="ranking.pl";
 my $board_page="http://www.youtube.com";
 my $knowledge_page="http://www.daum.net";
 
@@ -59,19 +59,19 @@ sub print_header($){
           <ul class="nav navbar-nav navbar-left">
            <li class="dropdown active"><a href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><span>Problem&nbsp;<i class="caret"></i></span></a>
               <ul class="dropdown-menu">
-                <li><a href="problem.pl?show_type=all"><span>All</span></a></li>
+                <li><a href="problem_list.pl?show_type=all"><span>All</span></a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="orders.html"><span>Easy</span></a></li>
-                <li><a href="orders.html"><span>Normal</span></a></li>
-                <li><a href="orders.html"><span>Hard</span></a></li>
-                <li><a href="orders.html"><span>Crazy</span></a></li>
+                <li><a href="problem_list.pl?show_type=easy"><span>Easy</span></a></li>
+                <li><a href="problem_list.pl?show_type=normal"><span>Normal</span></a></li>
+                <li><a href="problem_list.pl?show_type=hard"><span>Hard</span></a></li>
+                <li><a href="problem_list.pl?show_type=crazy"><span>Crazy</span></a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="users.html"><span>Solve</span></a></li>
-                <li><a href="users.html"><span>NonSolve</span></a></li>
-                <li><a href="users.html"><span>Try</span></a></li>
+                <li><a href="problem_list.pl?show_type=solve"><span>Solve</span></a></li>
+                <li><a href="problem_list.pl?show_type=nonsolve"><span>NonSolve</span></a></li>
+                <li><a href="problem_list.pl?show_type=try"><span>Try</span></a></li>
                 <li role="separator" class="divider"></li>
-                <li><a href="users.html"><span>Algorithm</span></a></li>
-                <li><a href="users.html"><span>DataStructure</span></a></li>
+                <li><a href="problem_list.pl?show_type=algorithm"><span>Algorithm</span></a></li>
+                <li><a href="problem_list.pl?show_type=datastructure"><span>DataStructure</span></a></li>
               </ul>
             </li>
             <li><a href="$submit_page"><span>Submit Result</span></a></li>
@@ -310,22 +310,22 @@ sub print_sidemenu($){
                       <div class="nav-menu__text"><span>Problem</span></div>
                       <div class="nav-menu__right"><i class="fa fa-fw fa-angle-right arrow"></i></div></a>
                     <ul class="nav nav-menu__second collapse">
-                      <li><a href="products.html"><span>All</span></a></li>		               
-		               <li><a href="orders.html"><span>Easy</span></a></li>
-		               <li><a href="orders.html"><span>Normal</span></a></li>
-		               <li><a href="orders.html"><span>Hard</span></a></li>
-		               <li><a href="orders.html"><span>Crazy</span></a></li>		               
-		               <li><a href="users.html"><span>Solve</span></a></li>
-		               <li><a href="users.html"><span>NonSolve</span></a></li>
-		               <li><a href="users.html"><span>Try</span></a></li>
-		               <li><a href="users.html"><span>Algorithm</span></a></li>
-		               <li><a href="users.html"><span>DataStructure</span></a></li>
+                      <li><a href="problem_list.pl?show_type=all"><span>All</span></a></li>		               
+		               <li><a href="problem_list.pl?show_type=easy"><span>Easy</span></a></li>
+		               <li><a href="problem_list.pl?show_type=normal"><span>Normal</span></a></li>
+		               <li><a href="problem_list.pl?show_type=hard"><span>Hard</span></a></li>
+		               <li><a href="problem_list.pl?show_type=crazy"><span>Crazy</span></a></li>		               
+		               <li><a href="problem_list.pl?show_type=solve"><span>Solve</span></a></li>
+		               <li><a href="problem_list.pl?show_type=nonsolve"><span>NonSolve</span></a></li>
+		               <li><a href="problem_list.pl?show_type=try"><span>Try</span></a></li>
+		               <li><a href="problem_list.pl?show_type=algorithm"><span>Algorithm</span></a></li>
+		               <li><a href="problem_list.pl?show_type=datastructure"><span>DataStructure</span></a></li>
                     </ul>
                   </li>
              
-                  <li><a href="$contest_page">
+                  <li><a href="$ranking_page">
                       <div class="nav-menu__ico"><i class="fa fa-fw fa-trophy"></i></div>
-                      <div class="nav-menu__text"><span>Contest</span></div></a></li>
+                      <div class="nav-menu__text"><span>Ranking</span></div></a></li>
                   <li><a href="$submit_page">
                       <div class="nav-menu__ico"><i class="fa fa-fw fa-table"></i></div>
                       <div class="nav-menu__text"><span>Submit Result</span></div></a></li>

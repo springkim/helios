@@ -10,7 +10,8 @@ create table userinfo(
 	ui_visit int
 );
 create table nonemail_certification(
-	ui_id varchar(512) references userinfo(ui_id)
+	ui_id varchar(512) references userinfo(ui_id),
+	nec_str varchar(512)
 );
 create table admin(
 	ui_id varchar(512) references userinfo(ui_id)
@@ -29,7 +30,8 @@ create table problem(
 	pr_group varchar(128),
 	pr_timelimit varchar(128),
 	pr_memlimit varchar(128),
-	pr_content text
+	pr_content text,
+	pr_type	varchar(128)
 );
 create table userinfo_problem(
 	pr_optnum serial references problem(pr_optnum),

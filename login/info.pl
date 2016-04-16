@@ -84,7 +84,19 @@ sub GetLocalTime(){
 	return $date;
 }
 #=============database subroutine========================
-
+sub is_email_confirm($){
+	my $id=shift;
+	my $con = DBI->connect( GetDB(), GetID(), GetPW() );
+	my $state=$con->prepare("SELECT count(ui_id) FROM nonemail_certification WHERE ui_id=\'$id\'");
+	$state->execute;
+	my @row=$state->fetchrow_array;
+	$state->finish;
+	$con->disconnect;
+	if($row[0]==1){
+		return undef;	
+	}
+	return 1;
+}
 
 #================================================================
 1;
