@@ -31,7 +31,8 @@ if($id ne "" && $pw ne "" && $name ne "" && $email ne "" && $salt1 ne ""){
 		$pw=sha3_512_hex($salt2.$pw);
 	}
 	$con->do("INSERT INTO userinfo VALUES(\'$id\',\'$pw\',\'$name\',\'$email\',\'$salt1\',\'$salt2\',\'한마디! 써주세요!\',TRUE,0)");
-	$con->do("INSERT INTO nonemail_certification VALUES(\'$id\')");
+	my $asalt=salt(32);
+	$con->do("INSERT INTO nonemail_certification VALUES(\'$id\',\'$asalt\')");
 	$con->disconnect;	
 	say $q->redirect("../main.pl");
 }
