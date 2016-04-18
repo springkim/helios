@@ -18,21 +18,16 @@ sub execute($) {
 	}
 	$state->finish();
 	$con->disconnect;
-	print "\n";
 }
+my $id='root';
+my $elem='easy';
 
-
-execute("SELECT * FROM userinfo");
-execute("SELECT * FROM nonemail_certification");
+execute("SELECT count(DISTINCT problem.pr_optnum) FROM userinfo_problem NATURAL JOIN problem WHERE pr_level=\'$elem\' and ui_id=\'$id\' and uip_status=\'accepted\'");
+#execute("SELECT * FROM userinfo");
+#execute("SELECT * FROM nonemail_certification");
 #execute("SELECT * FROM userlog");
-
 #execute("SELECT pr_title FROM problem");
-
 #execute("SELECT * FROM userinfo_problem");
-
-execute("SELECT * FROM notice ORDER BY nt_date DESC");
-
-
-
-execute("SELECT * FROM language_status");
+#execute("SELECT * FROM notice ORDER BY nt_date DESC");
+#execute("SELECT * FROM language_status");
 

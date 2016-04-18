@@ -1,142 +1,212 @@
 #!/usr/bin/perl
 #
-#	@Project  : Helios
-#	@Architecture : DaeHyun, Hwang
-#	signup.pl
+# @Project				: Helios
+# @Architecture 		: Kim Bom
+# @file 				: login.pl
 #
-#	@Created by On 2016. 1. 2...
-#	@Copyright (C) 2016 DaeHyun, Hwang. All rights reserved.
+# @Created by KimBom On 2016. 04. 08...
+# @Copyright (C) 2016 KimBom. All rights reserved.
 #
 use strict;
 use warnings;
 use CGI;
 use DBI;
-use File::Copy;
+use feature 'say';
 use Digest::SHA3 qw(sha3_512_hex);
 use Crypt::Salt;
-require 'info.pl';
-require 'aes.pl';
-use CGI                 qw( );
 use HTTP::BrowserDetect qw( );
-#==============================Ready for CGI.===================================
-my $q = new CGI;
-my $con = DBI->connect( GetDB(), GetID(), GetPW() );
 
-#==============================HTML String==============================
-my $explain = '<p class="leftP">Your ID</p>';
-my $input_text =
-'<input type="text" id="ID" value="" autocomplete="off" name="ID" placeholder="ID" onkeyup="id_keyup()" onblur="id_keyup()" maxlength="64"></input>';
-my $salt_hidden="";
-my $button_text="Next";
-my $function_name="id_submit()";
-#==============================Recive 'Form' data.==============================
-my $id   = $q->param('HID');
-my $pw   = $q->param('HPW');
-my $salt = $q->param("SALT");
-#==============================================================
-my $state;
-my $c="";
+require '../../login/aes.pl';  #must be require before info.pl
+require '../../login/info.pl';
+my $q=new CGI;
+my $cookie="";
 my $redirect_script="";
-my $script="";
-#=========================in input login==============================
-if ($id) {
-	if ($pw) {
-		$state = $con->prepare("SELECT ui_salt2 FROM userinfo WHERE ui_id = \'$id\'");
-		$state->execute();
-		my @row = $state->fetchrow_array;
-		
-		$pw=sha3_512_hex($row[0].$pw);
-		$state = $con->prepare("SELECT count(ui_id) FROM userinfo WHERE ui_id = \'$id\' and ui_pw=\'$pw\'");
-		$state->execute();
-		@row = $state->fetchrow_array;
-		if($row[0]=="1"){
-			#save cookie
-			my $enc_name=AES_Encrypt("bluecandle_helios_cookie_id");
-			chop($enc_name);
-			chop($enc_name);
-			chop($enc_name);
-			my $enc_id=AES_Encrypt($id);
-			$c=$q->cookie(-name=>$enc_name,-value=>$enc_id);
-			
+
+my $cid=GetCookieId($q);
+if($cid ne ""){
+	say $q->redirect('../main.pl');
+}
+
+my $id=$q->param('ID');
+my $pw=$q->param('EPW');
+if($id ne "" && $pw ne ""){
+	my $con = DBI->connect( GetDB(), GetID(), GetPW() );	
+	my $state=$con->prepare("SELECT ui_salt2 FROM userinfo WHERE ui_id=\'$id\'");
+	$state->execute;
+	my @row=$state->fetchrow_array;
+	$state->finish;
+	my $salt2=$row[0];
+	foreach my $i(0..777){
+		$pw=sha3_512_hex($salt2.$pw);
+	}
+	$state=$con->prepare("SELECT ui_id,ui_savelog FROM userinfo WHERE ui_id=\'$id\' and ui_pw=\'$pw\'");
+	$state->execute;
+	@row=$state->fetchrow_array;
+	$state->finish;
+	#login success
+	
+	if($#row==1){
+		if($row[1] eq "1"){
+			#ip address
 			my $ip = $q->remote_host;
-			my ($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) = localtime;
-			my $date=($year+1900).".".($mon+1).".".($mday).". "."$hour:"."$min:"."$sec";
-			
+			#current time(server)
+			my $date=GetLocalTime();
+			#browser state
 			my $bd = HTTP::BrowserDetect->new($q->user_agent());
 			my $env=$bd->browser_string(). ' '. $bd->public_version();
-			my $query = "INSERT INTO userlog VALUES(\'$id\',\'$date\',\'$ip\',\'$env\')";
-			
-			$con->do($query);
-			
-			$redirect_script='<script>window.location="../index.pl";</script>';
-		}else{
-			print $q->redirect("login.pl");
+			$con->do("INSERT INTO userlog VALUES(\'$id\',\'$date\',\'$ip\',\'$env\')");
 		}
+		#set cookie
+		my $enc_id=AES_Encrypt($id);
+		$cookie=$q->cookie(-name=>GetCookieName(),-value=>$enc_id);
+		$redirect_script='<script>window.location="../main.pl";</script>';
+	}else{	#login failure
+		$redirect_script='<script>$(document).ready(function(){
+			$("#LFAIL_TITLE").html("<strong>Login failure</strong>");
+			$("#LFAIL_COMMENT").html("<h5>Please check your id or password.</h5>");
+			$("#LFAILDLG").click();
+		})</script>';
+		#say $q->redirect('logout.pl');
 	}
-	else {	#only input id
-		$state = $con->prepare("SELECT ui_salt1 FROM userinfo WHERE ui_id = \'$id\'");
-		$state->execute();
-		my @row = $state->fetchrow_array;
-		if(!$row[0]){
-			$row[0]=salt(32);
-		}
-		$salt_hidden="<input type=\"hidden\" id=\"SALT\" name=\"SALT\" value=\"$row[0]\"/>";
-		$explain='<p class="leftP">Your Password</p>';
-		$input_text='<input type="password" id="PW" autocomplete="off" name="PW" placeholder="PW" onkeyup="pw_keyup()" onblur="pw_keyup()" maxlength="64"></input>';
-		$button_text="Login";
-		$function_name="pw_submit()";
-	}
+	$con->disconnect;	
 }
-$con->disconnect();
-#------------------------------------end database-------------------------------
-if($c){
-	print $q->header(-cookie=>$c);
+#==============================WRITE PERL CGI==============================
+if($cookie){
+	print $q->header(-cookie=>$cookie);
 }else{
-	print $q->header( -charset => "UTF-8" );
+	print $q->header(-charset=>"UTF-8");
 }
-print <<EOF
-<head>
-	<title>BlueCandle</title>
-	<link rel="stylesheet" type="text/css" href="css/signup.css" />
-	<script src="javascript/sha3.js"></script>
-	<script src="javascript/pbkdf2.js"></script>
-	<script src="javascript/signup.js" type="text/javascript"></script>
-	<script src="javascript/login.js" type="text/javascript"></script>
-	<script>$script</script>
-	$redirect_script
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-</head>
-
-<body>
-	<form id="loginForm" action="login.pl" method="post" ENCTYPE="multipart/form-data">
-		<div class="container">
-			<div class="outer">
-				<div class="inner">
-					<div class="centered_inner_left">
-						$explain
-					</div>
-					<section class="webdesigntuts-workshop">
-					$salt_hidden
-					$input_text
-					
-					<input type="hidden" id="HPW" name="HPW" value=""></input>
-					<input type="hidden" id="HID" name="HID" value="$id"></input>
-					
-					<input type="submit" value="$button_text" onclick="return $function_name"></input>
-	</form>
-					<form action="signup.pl" >
-						<input type="submit" value="Sign Up" style="position:relative;left:-20px;top:-100px">
-					</form>
-					</section>
-				</div>
-				
-				<div id="msg" class="centered_inner_right2">
-						<div class='warn' id="ivchar" style="visibility:hidden;top:175px">Invaild character</div>
-				</div>			
+my $str='
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Right - Bootstrap Admin Template</title>
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../img/apple-touch-favicon.png">
+    <link href="../libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic" rel="stylesheet" type="text/css">
+    <link href="../libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../libs/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../css/right.dark.css" rel="stylesheet" class="demo__css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="sha/sha3.js"></script>
+	 <script src="sha/pbkdf2.js"></script>
+    <script src="login.js"></script>
+    <style>
+    .signup__logo {
+    	height: 175px;
+    	margin-bottom: 20px;
+    	background: url("../img/login_logo.png") 50% top no-repeat;
+    	background-size: contain;
+	}
+    </style>
+    '.$redirect_script.'
+    <link href="../css/demo.css" rel="stylesheet"><!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+  </head>
+  <body class="framed" >
+    <div class="wrapper" >
+    <div class="main" style="margin-left:0px;padding-left:0px;margin-bottom:0px;">
+     <div class="main__scroll scrollbar-macosx "style="height : 100%;min-height:100%">
+      <div class="login" style="background-color:rgba(0,0,0,0)">
+        <form id="LOGINFORM" action="login.pl" class="login__form" method="post" ENCTYPE="multipart/form-data">
+          <div class="signup__logo"></div> 
+           <div class="form-group has-feedback" id="ID_EDITBOX">
+                      <label class="control-label">Input your id</label>
+                      <div class="form-group"><input type="password"  id="ID" name="ID" maxlength="64" class="form-control"></div>
+                      <span class="glyphicon form-control-feedback"></span>
 			</div>
-		</div>
-</body>
+			
+           <div class="form-group  has-feedback" id="PW_EDITBOX">
+                      <label class="control-label">Secret password</label>
+                      <div class="form-group"><input type="password"  id="PW" name="PW" maxlength="64" class="form-control"></div>
+                      <span class="glyphicon form-control-feedback"></span>
+			</div>
+			
+			<div style="display:none">
+          <input type="submit" id="SUBMIT_BTN" value=""></input>
+          </div>
+          <input type="hidden" id="EPW" name="EPW" value="" maxlength="500"></input>
+         <button id="login" class="btn btn-success" style="margin-top:10px;margin-bottom:10px;float:right">
+         Login
+         </button>
+            
+        </form>
+      </div>
+    </div>
+    </div>
+    
+    <div style="display:none">
+    <div class="template template__modals" style="display:inline"><div class="template__modal" style="display:inline">                           
+    <button id="LOGINDLG" type="check" data-toggle="modal" data-target="#modal1" class="btn btn-info" style="float:right">Check</button>
+    </div></div></div>
+    
+    <div style="display:none">
+    <div class="template template__modals" style="display:inline"><div class="template__modal" style="display:inline">                           
+    <button id="LFAILDLG" type="check" data-toggle="modal" data-target="#modal2" class="btn btn-info" style="float:right">Check</button>
+    </div></div></div>
+    
+    <div id="modal1" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">
+    <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">login information missing</h4></div>
+    <div class="modal-body">
+    <div role="alert" class="alert alert-danger" id="LOGIN_DIALOG_COLOR">
+    <h4><i class="alert-ico fa fa-fw fa-ban" id="LOGIN_DIALOG"></i><strong id="LOGIN_TITLE"><strong>Fail</strong></strong></h4>
+    <strong id="LOGIN_COMMENT"><h5>Hello, World</h5></strong>
+    </div>
+    </div>
+    <div class="modal-footer">
+    <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+    </div></div></div></div>
+    
+    <div id="modal2" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">
+    <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">Login failure</h4></div>
+    <div class="modal-body">
+    <div role="alert" class="alert alert-danger" id="LFAIL_DIALOG_COLOR">
+    <h4><i class="alert-ico fa fa-fw fa-ban" id="LFAIL_DIALOG"></i><strong id="LFAIL_TITLE"><strong>Fail</strong></strong></h4>
+    <strong id="LFAIL_COMMENT"><h5>return 0;</h5></strong>
+    </div>
+    </div>
+    <div class="modal-footer">
+    <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+    </div></div></div></div>
+     
+    
+    
+    </div>
+    <script src="../libs/jquery/jquery.min.js"></script>
+    <script src="../libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../js/demo.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../libs/jquery/jquery.min.js"></script>
+    <script src="../libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../libs/jquery.scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../libs/bootstrap-tabdrop/bootstrap-tabdrop.min.js"></script>
+    <script src="../libs/sparkline/jquery.sparkline.min.js"></script>
+    <script src="../libs/ionrangeslider/js/ion.rangeSlider.min.js"></script>
+    <script src="../libs/inputNumber/js/inputNumber.js"></script>
+    <script src="../libs/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+    <script src="../libs/raphael/raphael-min.js"></script>
+    <script src="../libs/morris.js/morris.min.js"></script>
+    <script src="../libs/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    
+    <script src="../libs/jquery/jquery.min.js"></script>
+    <script src="../libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../libs/jquery.scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../libs/bootstrap-tabdrop/bootstrap-tabdrop.min.js"></script>
+    <script src="../libs/sparkline/jquery.sparkline.min.js"></script>
+    <script src="../libs/ionrangeslider/js/ion.rangeSlider.min.js"></script>
+    <script src="../libs/inputNumber/js/inputNumber.js"></script>
+    <script src="../libs/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/demo.js"></script>
+  </body>
 </html>
-EOF
-;
-
+';
+$str=~s/\s+/ /g;
+say $str;

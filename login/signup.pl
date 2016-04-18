@@ -1,134 +1,221 @@
 #!/usr/bin/perl
 #
-#	@Project  : Helios
-#	@Architecture : Kim Bom
-#	signup.pl
+# @Project				: Helios
+# @Architecture 		: Kim Bom
+# @file 				: signup.pl
 #
-#	@Created by KimBom On 2016. 1. 2...
-#	@Copyright (C) 2015 KimBom. All rights reserved.
+# @Created by KimBom On 2016. 04. 03...
+# @Copyright (C) 2016 KimBom. All rights reserved.
 #
 use strict;
 use warnings;
 use CGI;
 use DBI;
-use File::Copy;
+use feature 'say';
 use Digest::SHA3 qw(sha3_512_hex);
 use Crypt::Salt;
-require 'info.pl';
 
-#==============================CGI 작업을 준비합니다.==============================
-my $q = new CGI;
-my $con = DBI->connect( GetDB(), GetID(), GetPW() );
+require '../../login/aes.pl';  #must be require before info.pl
+require '../../login/info.pl';
+my $q=new CGI;
 
-#==============================Form의 값을 받아옵니다.==============================
-my $id          = $q->param('HID');
-my $pw          = $q->param('HPW');
-my $name        = $q->param('NAME');
-my $guild       = $q->param('GUILD');
-my $phone       = $q->param('PHONE');
-my $email       = $q->param('EMAIL');
-my $upload_file = $q->param('FILE');
-my $salt        = $q->param('HSALT');
-#$id='root';$pw='root';$name='root';$guild='root';$phone='1234';$email='root';$salt='abvs';
-my $ids = "";    #데이터베이스의 아이디 목록입니다.
-
-#==============================회원가입을 완료했을때 호출됩니다..==============================
-if ($id) {
-	$upload_file =~ m<.+\.(\w+)?$>;    #확장자를 추출합니다.
-	my $photo_path = "$id-0-.$1";
-	copy( $upload_file, "../main/problem_repository/algorithm/basic/$photo_path" );	#파일을 저장합니다.
-	open FP,'>',"photo/test/test";
-	print FP $upload_file;
-	close FP;
-	my $p_salt=salt(32);
-	$pw=sha3_512_hex($p_salt.$pw);
-	my $query = "INSERT INTO userinfo values(\'$id\',\'$pw\',\'$name\',\'$guild\',\'$phone\',\'$email\',\'$photo_path\',\'0\',\'$salt\',\'$p_salt\')";
-	$con->do($query);
-	$con->disconnect();
-	#print $q->redirect('login.pl');
-}
-else {
-	my $query = "SELECT ui_id FROM userinfo";
-	my $state = $con->prepare($query);
-	$state->execute();
-	while ( my @row = $state->fetchrow_array ) {
-		$ids = $ids . $row[0] . ",";
+my $id=$q->param('ID');
+my $pw=$q->param('EPW');
+my $name=$q->param('NAME');
+my $email=$q->param('EMAIL');
+my $salt1=$q->param('SALT1');
+if($id ne "" && $pw ne "" && $name ne "" && $email ne "" && $salt1 ne ""){
+	my $con = DBI->connect( GetDB(), GetID(), GetPW() );	
+	my $salt2=salt(32);
+	foreach my $i(0..777){
+		$pw=sha3_512_hex($salt2.$pw);
 	}
-	chop($ids);
-	$state->finish();
-	$con->disconnect();
+	$con->do("INSERT INTO userinfo VALUES(\'$id\',\'$pw\',\'$name\',\'$email\',\'$salt1\',\'$salt2\',\'한마디! 써주세요!\',TRUE,0)");
+	my $asalt=salt(32);
+	$con->do("INSERT INTO nonemail_certification VALUES(\'$id\',\'$asalt\')");
+	$con->disconnect;	
+	say $q->redirect("../main.pl");
 }
-#=======================================DEBUG=================
-my $visible="hidden";
-#==============================CGI 부분==============================
-print $q->header( -charset => "UTF-8" );
-print <<EOF
-<head>
-	<title>BlueCandle</title>
-	<link rel="stylesheet" type="text/css" href="css/signup.css" />
-	<script src="javascript/sha3.js"></script>
-	<script src="javascript/pbkdf2.js"></script>
-	<script src="javascript/signup.js" type="text/javascript"></script>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-</head>
-<body>
-<section class="back">
-		<form action="login.pl" method="post">
-			<input type="submit" id="login"  value="back to login"></input>
-		</form>
-</selection>
-<div class="container">	
-	<form action="signup.pl" method="post" ENCTYPE="multipart/form-data">
-	<div class="outer"><div class="inner"><div class="centered-top"></div><div class="centered">
-		<div class="centered_inner_right"></div>
-		<div id="msg" class="centered_inner_right2">
-			<div class='warn' id="sameid" style="visibility:$visible;top:177px">The same id exist</div>
-			<div class='warn' id="char4" style="visibility:$visible;top:137px">Id must be at least 4 char</div>
-			<div class='warn' id="cid" style="visibility:$visible;top:145px">not matching ID</div>
+
+#==============================WRITE PERL CGI==============================
+print $q->header(-charset=>"UTF-8");
+my $str='
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Right - Bootstrap Admin Template</title>
+    <link rel="icon" type="image/png" href="../img/favicon.png">
+    <link rel="apple-touch-icon-precomposed" href="../img/apple-touch-favicon.png">
+    <link href="../libs/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://fonts.googleapis.com/css?family=Roboto:400,100,100italic,300,300italic,400italic,500,500italic,700,700italic,900,900italic" rel="stylesheet" type="text/css">
+    <link href="../libs/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <link href="../libs/awesome-bootstrap-checkbox/awesome-bootstrap-checkbox.css" rel="stylesheet">
+    <link href="../css/right.dark.css" rel="stylesheet" class="demo__css">
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+    <script src="sha/sha3.js"></script>
+	 <script src="sha/pbkdf2.js"></script>
+    <script src="signup.js"></script>
+    <style>
+    .signup__logo {
+    	height: 175px;
+    	margin-bottom: 20px;
+    	background: url("../img/logo.png") 50% top no-repeat;
+    	background-size: contain;
+	}
+    </style>
+    <link href="../css/demo.css" rel="stylesheet"><!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script><![endif]-->
+  </head>
+  <body class="framed" >
+    <div class="wrapper" >
+    <div class="main" style="margin-left:0px;padding-left:0px;margin-bottom:0px;">
+     <div class="main__scroll scrollbar-macosx "style="height : 100%;min-height:100%">
+      <div class="login" style="background-color:rgba(0,0,0,0)">
+        <form id="SIGNUPFORM" action="signup.pl" class="login__form" method="post" ENCTYPE="multipart/form-data">
+          <div class="signup__logo"></div> 
+           <div class="form-group has-feedback" id="ID_EDITBOX">
+                      <label class="control-label">Your best id</label>
+                      <div class="form-group" >
+                      	<input style="width:75%;display:inline" type="text"  id="ID" name="ID" maxlength="64" class="form-control">
+                      	
+                      	<div class="template template__modals" style="display:inline"><div class="template__modal" style="display:inline">
+                                
+                              <button id="checkid" type="button" data-toggle="modal" data-target="#modal1" class="btn btn-info" style="float:right">Check</button>
+                         </div></div>
+                      </div>
+                      
+                      <span class="glyphicon form-control-feedback"></span>
+                      
+                      
+			</div>
 			
-			<div class='warn' id="pass4" style="visibility:$visible;top:154px">Password is too short</div>
-			<div class='warn' id="ivchar" style="visibility:$visible;top:114px">Invaild character</div>
-			<div class='warn' id="cpass" style="visibility:$visible;top:124px">not matching password</div>
-			<div class='warn' id="namechk" style="visibility:$visible;top:134px">input your name</div>
-			<div class='warn' id="guildchk" style="visibility:$visible;top:144px">input your guild</div>
-			<div class='warn' id="phonechk" style="visibility:$visible;top:154px">input your phone</div>
-			<div class='warn' id="emchk" style="visibility:$visible;top:164px">This is not a valid e-mail</div>
-		</div>
-		<div class="centered_inner_left">
-			<p class="leftP">Your best id</p>
-			<p class="leftP">Confirm id</p>
-			<p class="leftP">Safety password</p>
-			<p class="leftP">Confirm password</p>
-			<p class="leftP">What`s your name?</p>
-			<p class="leftP">Where do you belong?</p>
-			<p class="leftP">Phone number</p>
-			<p class="leftP">Your most used e-mail</p>
-			<p class="leftP">Your pretty face</p>
-		</div>
-		<section class="webdesigntuts-workshop">
-			<input type="hidden" id="IDS"  value="$ids"></input>
-			<input type="hidden" id="HPW" name="HPW" value=""></input>
-			<input type="hidden" id="HID" name="HID" value=""></input>
-			<input type="hidden" id="HSALT" name="HSALT" value=""></input>
-			
-			<input type="text" id="ID" autocomplete="off" name="ID" placeholder="ID" onkeyup="id_keyup()" onblur="id_keyup()" maxlength="64"></input>
-			<input type="text" id="CID" autocomplete="off" name="CID" placeholder="Confirm ID" onkeyup="cid_keyup()" onblur="cid_keyup()" maxlength="64"></input>
-			<input type="password" id="PW" autocomplete="off" name="PW" placeholder="PW" onkeyup="pw_keyup()" onblur="pw_keyup()" maxlength="64"></input>
-			<input type="password" id="CPW" autocomplete="off" name="CPW" placeholder="confirm PW" onkeyup="cpw_keyup()" onblur="pw_keyup()" maxlength="64"></input>
-			<input type="text" id="NAME" autocomplete="off" name="NAME" placeholder="NAME" maxlength="64" onkeyup="nempty_keyup('NAME','namechk')" onblur="nempty_keyup('NAME','namechk')"></input>
-			<input type="text" id="GUILD" autocomplete="off" name="GUILD" placeholder="GUILD" maxlength="64" onkeyup="nempty_keyup('GUILD','guildchk')" onblur="nempty_keyup('GUILD','guildchk')"></input>
-			<input type="text" id="PHONE" autocomplete="off" name="PHONE" placeholder="PHONE" onkeyup="tel_keyup()" onblur="tel_keyup()" maxlength="64" ></input>
-			<input type="email" id="EMAIL" autocomplete="off" name="EMAIL" placeholder="EMAIL" onkeyup="em_keyup()" onblur="em_keyup()" maxlength="100"></input>
-			<input type="file" style="display:none" id="FILE" name="FILE" onchange="filesizechk(this)" accept="image/*" ></input>
-	
-			<input type="text" id="fakeFile" value="" style="width:200px;" readonly="readonly"></input>
-			<input type="button" value="UPLOAD" onclick="goFile()" style="width:90px;"></input>
-			<input type="submit" value="Sign up" onclick="return CheckSubmit();"></input>
-		</section>
-	</div></div></div></div>
-	</form>
-	
-</body>
+           <div class="form-group  has-feedback" id="PW_EDITBOX">
+                      <label class="control-label">Safety password</label>
+                      <div class="form-group"><input type="password"  id="PW" name="PW" maxlength="64" class="form-control"></div>
+                      <span class="glyphicon form-control-feedback"></span>
+			</div>
+			<div class="form-group  has-feedback" id="CPW_EDITBOX">
+                      <label class="control-label">Confirm password</label>
+                      <div class="form-group"><input type="password"  id="CPW" name="CPW" maxlength="64" class="form-control"></div>
+                      <span class="glyphicon form-control-feedback"></span>
+			</div>
+			<div class="form-group  has-feedback" id="NAME_EDITBOX">
+                      <label class="control-label">Your name</label>
+                      <div class="form-group"><input type="text"  id="NAME" name="NAME" maxlength="64" class="form-control"></div>
+                      <span class="glyphicon form-control-feedback"></span>
+			</div>
+          <div class="form-group  has-feedback" id="EMAIL_EDITBOX">
+                      <label class="control-label">Your e-mail</label>
+                      <div class="form-group" >
+                      	<input style="width:75%;display:inline" type="text"  id="EMAIL" name="EMAIL" maxlength="64" class="form-control">
+                      	
+                      	<div class="template template__modals" style="display:inline"><div class="template__modal" style="display:inline">
+                                
+                              <button id="checkemail" type="button" data-toggle="modal" data-target="#modal2" class="btn btn-info" style="float:right">Check</button>
+                         </div></div>
+                      </div>
+                      
+                      <span class="glyphicon form-control-feedback"></span>
+                      
+                      <span class="glyphicon form-control-feedback"></span>
+                      
+                      
+			</div>
+			<div style="display:none">
+          <input type="submit" id="SUBMIT_BTN" value=""></input>
+          </div>
+          <input type="hidden" id="SALT1" name="SALT1" value=""></input>
+          <input type="hidden" id="EPW" name="EPW" value="" maxlength="500"></input>
+         <button id="signup" class="btn btn-default" style="margin-top:10px;margin-bottom:10px;float:right">Sign up</button>
+            
+        </form>
+      </div>
+    </div>
+    </div>
+    
+    <div style="display:none">
+    <div class="template template__modals" style="display:inline"><div class="template__modal" style="display:inline">                           
+    <button id="SIGNUPDLG" type="check" data-toggle="modal" data-target="#modal3" class="btn btn-info" style="float:right">Check</button>
+    </div></div></div>
+    
+    
+    <div id="modal1" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">
+    <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">user id overlap check</h4></div>
+    <div class="modal-body">
+    <div role="alert" class="alert alert-danger" id="IDCHECK_DIALOG_COLOR">
+    <h4><i class="alert-ico fa fa-fw fa-ban" id="IDCHECK_DIALOG"></i><strong id="IDCHECK_TITLE"><strong>Fail</strong></strong></h4>
+    <strong id="IDCHECK_COMMENT"><h5>Hello, World</h5></strong>
+    </div>
+    </div>
+    <div class="modal-footer">
+    <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+    </div></div></div></div>
+    
+    <div id="modal2" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">
+    <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">user email overlap check</h4></div>
+    <div class="modal-body">
+    <div role="alert" class="alert alert-danger" id="EMAILCHECK_DIALOG_COLOR">
+    <h4><i class="alert-ico fa fa-fw fa-ban" id="EMAILCHECK_DIALOG"></i><strong id="EMAILCHECK_TITLE"><strong>Fail</strong></strong></h4>
+    <strong id="EMAILCHECK_COMMENT"><h5>return 0;</h5></strong>
+    </div>
+    </div>
+    <div class="modal-footer">
+    <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+    </div></div></div></div>
+    
+    <div id="modal3" class="modal fade"><div class="modal-dialog"><div class="modal-content"><div class="modal-header">
+    <button type="button" data-dismiss="modal" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button>
+    <h4 class="modal-title">sign up error!!</h4></div>
+    <div class="modal-body">
+    <div role="alert" class="alert alert-danger" id="SIGNUP_DIALOG_COLOR">
+    <h4><i class="alert-ico fa fa-fw fa-ban" id="SIGNUP_DIALOG"></i><strong id="SIGNUP_TITLE"><strong>Fail</strong></strong></h4>
+    <strong id="SIGNUP_COMMENT"><h5>stdio</h5></strong>
+    </div>
+    </div>
+    <div class="modal-footer">
+    <button type="button" data-dismiss="modal" class="btn btn-default">Close</button>
+    </div></div></div></div>
+    
+    
+    
+    
+    
+    </div>
+    <script src="../libs/jquery/jquery.min.js"></script>
+    <script src="../libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../js/demo.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../libs/jquery/jquery.min.js"></script>
+    <script src="../libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../libs/jquery.scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../libs/bootstrap-tabdrop/bootstrap-tabdrop.min.js"></script>
+    <script src="../libs/sparkline/jquery.sparkline.min.js"></script>
+    <script src="../libs/ionrangeslider/js/ion.rangeSlider.min.js"></script>
+    <script src="../libs/inputNumber/js/inputNumber.js"></script>
+    <script src="../libs/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+    <script src="../libs/raphael/raphael-min.js"></script>
+    <script src="../libs/morris.js/morris.min.js"></script>
+    <script src="../libs/bootstrap-select/dist/js/bootstrap-select.min.js"></script>
+    
+    <script src="../libs/jquery/jquery.min.js"></script>
+    <script src="../libs/bootstrap/js/bootstrap.min.js"></script>
+    <script src="../libs/jquery.scrollbar/jquery.scrollbar.min.js"></script>
+    <script src="../libs/bootstrap-tabdrop/bootstrap-tabdrop.min.js"></script>
+    <script src="../libs/sparkline/jquery.sparkline.min.js"></script>
+    <script src="../libs/ionrangeslider/js/ion.rangeSlider.min.js"></script>
+    <script src="../libs/inputNumber/js/inputNumber.js"></script>
+    <script src="../libs/bootstrap-switch/dist/js/bootstrap-switch.min.js"></script>
+    <script src="../js/main.js"></script>
+    <script src="../js/demo.js"></script>
+  </body>
 </html>
-EOF
-  ;
+';
+$str=~s/\s+/ /g;
+say $str;
+
