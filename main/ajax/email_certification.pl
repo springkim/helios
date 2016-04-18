@@ -16,9 +16,7 @@ my @row=$state->fetchrow_array;
 $state->finish;
 if($row[0]==1){
 	$con->do("DELETE FROM nonemail_certification WHERE ui_id=\'$id\'");
-}
-
-print $q->header(-charset=>"UTF-8");
+	print $q->header(-charset=>"UTF-8");
 print '
 <html>
 	<head>
@@ -33,4 +31,9 @@ print '
 	</body>
 </html>
 ';
+}else{
+	
+}
+
+
 $con->disconnect();

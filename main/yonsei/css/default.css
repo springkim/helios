@@ -1,0 +1,54 @@
+@import url('/font/nanumbarungothic.css');
+@import url('/css/gh-buttons.css');
+
+* {font-family: 'Nanum Barun Gothic', 'malgun gothic', gulim, 援대┝, 援대┝泥�, 諛뷀깢, 諛뷀깢泥� ;}
+BODY { color:#4d4d4d;  font-size:12px; line-height:150%; }
+.solid {
+	padding:0;
+	margin:0;
+	background-color:#FFFFFF; 
+	border:1px solid #cccccc;
+}    
+.dashed {background-color:#FFFFFF; border:#cccccc 1px dashed;}
+           
+H1 {font-size:31px; color:#05367b;}
+H2 {font-size:27px; color:#05367b;}
+H3 {font-size:23px; color:#05367b;}
+H4 {font-size:19px; color:#05367b;}
+H5 {font-size:15px; color:#05367b;}
+H6 {font-size:13px; color:#05367b;}
+
+H1 a:link {line-height:130%;font-size:31px; color:#05367b;}
+H1 a:visited {line-height:130%;font-size:31px; color:#05367b;}
+H1 a:active {line-height:130%;font-size:31px; color:#05367b;}
+H1 a:hover {line-height:130%;font-size:31px; color:#05367b;}
+
+H2 a:link {line-height:130%;font-size:27px; color:#05367b;}
+H2 a:visited {line-height:130%;font-size:27px; color:#05367b;}
+H2 a:active {line-height:130%;font-size:27px; color:#05367b;}
+H2 a:hover {line-height:130%;font-size:27px; color:#05367b;}
+
+H3 a:link {line-height:130%;font-size:23px; color:#05367b;}
+H3 a:visited {line-height:130%;font-size:23px; color:#05367b;}
+H3 a:active {line-height:130%;font-size:23px; color:#05367b;}
+H3 a:hover {line-height:130%;font-size:23px; color:#05367b;}
+
+H4 a:link {line-height:130%;font-size:19px; color:#05367b;}
+H4 a:visited {line-height:130%;font-size:19px; color:#05367b;}
+H4 a:active {line-height:130%;font-size:19px; color:#05367b;}
+H4 a:hover {line-height:130%;font-size:19px; color:#05367b;}
+
+H5 a:link {line-height:130%;font-size:15px; color:#05367b;}
+H5 a:visited {line-height:130%;font-size:15px; color:#05367b;}
+H5 a:active {line-height:130%;font-size:15px; color:#05367b;}
+H5 a:hover {line-height:130%;font-size:15px; color:#05367b;}
+
+H6 a:link {line-height:130%;font-size:13px; color:#05367b;}
+H6 a:visited {line-height:130%;font-size:13px; color:#05367b;}
+H6 a:active {line-height:130%;font-size:13px; color:#05367b;}
+H6 a:hover {line-height:130%;font-size:13px; color:#05367b;}
+
+A:link {color:#05367b;text-decoration:none;}
+A:visited {color:#05367b;text-decoration:none;}
+A:active {color:#05367b;text-decoration:none;}
+A:hover {color:#05367b;text-decoration:none;}

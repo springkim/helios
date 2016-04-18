@@ -39,7 +39,11 @@ if($ptype eq 'acm'){
 #############################################
 my $submit_block='';
 my $jquery='';
-if($c_id ne ''){
+$state=$con->prepare("SELECT count(ui_id) FROM nonemail_certification WHERE ui_id=\'$c_id\'");
+$state->execute;
+my @c_email=$state->fetchrow_array;
+$state->finish;
+if($c_id ne '' and $c_email[0]==0){
 $submit_block='<div class="col-md-12">
                       <div class="panel panel-danger">
                         <div class="panel-heading">

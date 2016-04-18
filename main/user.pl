@@ -13,9 +13,12 @@ require 'common_html.pl';
 my $q=new CGI;
 my $con = DBI->connect( GetDB(), GetID(), GetPW() );
 my $c_id=GetCookieId($q);
-
+if($c_id eq ''){
+	print $q->redirect('main.pl');
+}
 #==============================WRITE PERL CGI==============================
 print $q->header(-charset=>"UTF-8");
+
 print helios_html_head($q,$c_id);
 print '<body class="framed main-scrollable"><div class="wrapper">';
 
@@ -79,7 +82,7 @@ print <<EOF
                               <div style=""></div>
                             </div>
                           </div>
-                          <button type="button" class="btn btn-info" id="email_mbtn">E-Mail Modify</button>
+                          <button type="button" class="btn btn-info" id="email_mbtn">E-mail Modify</button>
                                   <button type="button" class="btn btn-info" id="comment_mbtn">Comment Midify</button>
                                   $email_confirm
                           <div class="users-preview__props" style="margin-top:5px">
@@ -110,13 +113,13 @@ print <<EOF
                             <div class="form-group">
                               <label class="col-sm-2 control-label">E-Mail</label>
                               <div class="col-sm-10">
-                                <input type="email" placeholder="$email" class="form-control">
+                                <input id="email_val" type="email" placeholder="$email" class="form-control">
                               </div>
                             </div>
                             <div class="form-group">
                               <label class="col-sm-2 control-label">Modify</label>
                               <div class="col-sm-10">
-                                <button type="submit" class="btn btn-default">Modify Button</button>
+                                <button id="email_sbtn" type="submit" class="btn btn-default">Modify Button</button>
                               </div>
                             </div>
                           </div>
@@ -134,13 +137,13 @@ print <<EOF
                             <div class="form-group">
                               <label class="col-sm-2 control-label">Comment</label>
                               <div class="col-sm-10">
-                                <input type="email" placeholder="$comment" class="form-control">
+                                <input id="comment_val" type="email" placeholder="$comment" class="form-control" maxlength="64">
                               </div>
                             </div>
                             <div class="form-group">
                               <label class="col-sm-2 control-label">Modify</label>
                               <div class="col-sm-10">
-                                <button type="submit" class="btn btn-default">Modify Button</button>
+                                <button id="comment_sbtn" type="submit" class="btn btn-default">Modify Button</button>
                               </div>
                             </div>
                           </div>
@@ -196,13 +199,61 @@ $(document).ready(function(){
 		})	
 	})
 	$("#email_mbtn").click(function(){
-		$("#comment_modify").css("display","none");
-		$("#email_modify").css("display","block");
+		if($("#email_modify").css("display")=="block"){
+			$("#comment_modify").css("display","none");
+			$("#email_modify").css("display","none");
+		}else{
+			$("#comment_modify").css("display","none");
+			$("#email_modify").css("display","block");
+		}
 	})
 	$("#comment_mbtn").click(function(){
-		$("#email_modify").css("display","none");
-		$("#comment_modify").css("display","block");
+		if($("#comment_modify").css("display")=="block"){
+			$("#comment_modify").css("display","none");
+			$("#email_modify").css("display","none");
+		}else{
+			$("#email_modify").css("display","none");
+			$("#comment_modify").css("display","block");
+		}
 		
+	})
+	$("#email_sbtn").click(function(){
+		var regex=/^([\w-]+(?:\.[\w-]+)*)@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$/;
+		if(regex.test($("#email_val").val())==false){
+			alert("올바른 이메일 형식이 아닙니다.");
+		}else{
+			var email=$("#email_val").val();
+			$.ajax({
+	       url:"ajax/email_modify.pl",
+	       data:{"ID":"'.$id.'","EMAIL":email},
+	       success:function(){
+	           window.location.replace("user.pl");
+	        },
+	       error:function(){
+	          alert("변경실패.");
+	        }
+	            
+			})
+		}
+	})
+	$("#comment_val").keyup(function(){
+		$("#comment_val").val($("#comment_val").val().replace(/[^a-z| |A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]+/g,""));
+	})
+	$("#comment_val").blur(function(){
+		$("#comment_val").val($("#comment_val").val().replace(/[^a-z| |A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣]+/g,""));
+	})
+	$("#comment_sbtn").click(function(){
+			var comment=$("#comment_val").val();
+			$.ajax({
+		       url:"ajax/comment_modify.pl",
+		       data:{"ID":"'.$id.'","COMMENT":comment},
+		       success:function(){
+		           window.location.replace("user.pl");
+		        },
+		       error:function(){
+		          alert("변경실패.");
+		        }
+			})
 	})
 });
 </script>';
