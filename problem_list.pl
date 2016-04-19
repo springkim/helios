@@ -83,7 +83,7 @@ while(my $row=$state->fetchrow_hashref){
 	my $num=$row->{pr_optnum};
 	my $title=$row->{pr_title};
 	my $level=$row->{pr_level};
-	my $state2=$con->prepare("SELECT count(DISTINCT ui_id) FROM userinfo_problem WHERE pr_optnum=\'$num\'");
+	my $state2=$con->prepare("SELECT count(ui_id) FROM userinfo_problem WHERE pr_optnum=\'$num\'");
 	$state2->execute;
 	my @row=$state2->fetchrow_array;
 	$state2->finish;
