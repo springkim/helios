@@ -4,7 +4,7 @@ use warnings;
 use CGI;
 use DBI;
 use feature 'say';
-require '../../login/info.pl';
+require '../library/info.pl';
 my $q=new CGI;
 my $id=$q->param('ID');
 print $q->header(-charset=>"UTF-8");

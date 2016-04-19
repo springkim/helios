@@ -38,7 +38,7 @@ close(TEXT);
 #================================================================================
 #					문제 초기화.
 #================================================================================
-my $p_path="../main/problem_repository";
+my $p_path="../problem_repository";
 opendir DIR,$p_path;
 my @dir=readdir(DIR);
 foreach my $elem(@dir){	#algorithm datastducture

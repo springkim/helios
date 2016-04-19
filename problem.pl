@@ -43,7 +43,8 @@ $state=$con->prepare("SELECT count(ui_id) FROM nonemail_certification WHERE ui_i
 $state->execute;
 my @c_email=$state->fetchrow_array;
 $state->finish;
-if($c_id ne '' and $c_email[0]==0){
+if($c_id ne ''){
+	if($c_email[0]==0){
 $submit_block='<div class="col-md-12">
                       <div class="panel panel-danger">
                         <div class="panel-heading">
@@ -93,6 +94,22 @@ $(document).ready(function(){
 	})
 })
 </script>';
+	}else{
+			$submit_block='<div class="col-md-8">
+                            <div class="panel panel-warning">
+                              <div class="panel-heading">
+                                <h3 class="panel-title">Please certify your e-mail</h3>
+                              </div>
+                              <div class="panel-body">
+                                <p>
+                                	이메일 인증은 대시보드 좌측 메뉴의 User에서 인증 받을수 있습니다.<br>
+                                	인증을 하지 않으면 문제를 풀 수 없습니다.
+                                </p>
+                              </div>
+                            </div>
+                          </div>
+                        </div>';
+	}
 }
 ###########RANKING#####################
 my $rank='';
@@ -135,6 +152,7 @@ foreach my $i(0..9){
 }
 $state->finish;
 #############################################
+$content=~s/'/"/g;
 print <<EOF
 <div class="main">
           <div class="main__scroll scrollbar-macosx">

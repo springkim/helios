@@ -97,6 +97,31 @@ sub is_email_confirm($){
 	}
 	return 1;
 }
-
+sub is_admin($){
+	my $id=shift;
+	my $ret=undef;
+	my $con = DBI->connect( GetDB(), GetID(), GetPW() );
+	my $state=$con->prepare("SELECT count(ui_id) FROM admin WHERE ui_id=\'$id\'");
+	$state->execute;
+	my @row=$state->fetchrow_array;
+	$state->finish;
+	
+	if($row[0]==1){
+		$ret=1;
+	}else{
+		$state=$con->prepare("SELECT count(ui_id) FROM superadmin WHERE ui_id=\'$id\'");
+		$state->execute;
+		@row=$state->fetchrow_array;
+		$state->finish;
+		if($row[0]==1){
+			$ret=2;	
+		}
+	}
+	$con->disconnect;
+	return $ret;	
+	#0 normal user 
+	#1 admin 
+	#2 superadmin
+}
 #================================================================
 1;

@@ -32,7 +32,7 @@ if(isAdmin($c_id)){
 				my $path="problem_repository/$class/$title";
 				mkdir $path;
 				chmod 0777,$path;
-				$content=~s/'/"/g;	#단일 쿼터 제
+				$content=~s/'/''/g;	#데이터 베이스에 '를 삽입하려면 ''를  써야한다.
 				open FP,'>',"$path/problem";
 				print FP $title,"\n";
 				print FP $class,"\n";
@@ -283,6 +283,7 @@ $(document).ready(function(){
 	})
 });
 </script>';
+
 ###############################
 print '</body></html>';
 }else{

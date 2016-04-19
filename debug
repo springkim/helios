@@ -1,2 +1,1 @@
-2 C main.c2 C main.c
-INSERT INTO userinfo_problem VALUES(default,'root','C','0','wait','2016.04.15. 20:17:47','user_source/root-2016.04.15.20:17:47.c')
+rm -r algorithm/basic/두\ 숫자를\ 더해보자

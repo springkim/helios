@@ -123,7 +123,7 @@ print '</div></div></div>';
 
 print_js();
 
-print '< <script src="libs/datatables/media/js/jquery.dataTables.min.js"></script>
+print '<script src="libs/datatables/media/js/jquery.dataTables.min.js"></script>
     <script src="libs/datatables/media/js/dataTables.bootstrap.js"></script>
     <script src="js/template/table_data.js"></script>';
     

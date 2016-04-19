@@ -16,8 +16,8 @@ use Digest::SHA3 qw(sha3_512_hex);
 use Crypt::Salt;
 use HTTP::BrowserDetect qw( );
 
-require '../../login/aes.pl';  #must be require before info.pl
-require '../../login/info.pl';
+require '../library/aes.pl';  #must be require before info.pl
+require '../library/info.pl';
 my $q=new CGI;
 my $cookie="";
 my $redirect_script="";

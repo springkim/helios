@@ -1,11 +1,11 @@
 create table userinfo(
-	ui_id varchar(512) primary key,
+	ui_id varchar(48) primary key,
 	ui_pw varchar(512),
-	ui_name varchar(512),
-	ui_email varchar(512),
-	ui_salt1 varchar(512),
-	ui_salt2 varchar(512),
-	ui_comment varchar(512),
+	ui_name varchar(48),
+	ui_email varchar(256),
+	ui_salt1 varchar(256),
+	ui_salt2 varchar(256),
+	ui_comment varchar(128),
 	ui_savelog boolean,
 	ui_visit int
 );

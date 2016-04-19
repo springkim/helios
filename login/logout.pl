@@ -10,7 +10,7 @@
 use strict;
 use warnings;
 use CGI;
-require '../../login/info.pl';
+require '../library/info.pl';
 my $c_name=GetCookieName();
 #======
 print <<EOF

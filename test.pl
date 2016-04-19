@@ -14,7 +14,7 @@ my $name='kimbom';
 my $email='springnode@gmail.com';
 my $salt1='edc8c640d14a66cde80017bf74c1c36807f3f6d41fc023224f7dd04c1344a09a';
 my $salt2='vLbkj1JSTyY49QxvnBVtyafPXaRZyFiA';
-$con->do("INSERT INTO userinfo VALUES(\'$id\',\'$pw\',\'$name\',\'$email\',\'$salt1\',\'$salt2\',\'한마디! 써주세요!\',TRUE,0)");
+$con->do("INSERT INTO userinfo VALUES('$id',\'$pw\',\'$name\',\'$email\',\'$salt1\',\'$salt2\',\'한마디! 써주세요!\',TRUE,0)");
 $con->do("INSERT INTO nonemail_certification VALUES(\'$id\',\'$salt2\')");
 $con->do("INSERT INTO superadmin VALUES(\'$id\')");
 
@@ -51,5 +51,6 @@ $con->do("INSERT INTO language_status VALUES(default,\'$year-$mon-22\',\'C 666;C
 
 $con->do("INSERT INTO notice VALUES(default,\'$year-$mon-19\',\'시험용 공지입니다.\',\'안녕하십니까. 김봄은 코딩을 합니다.ㅠ\')");
 $con->do("INSERT INTO notice VALUES(default,\'$year-$mon-20\',\'영어하세요.\',\'코딩하지말고 영어하세요 김봄씨\')");
+
 
 $con->disconnect;

@@ -4,8 +4,8 @@ use warnings;
 use CGI;
 use DBI;
 use Crypt::Salt;
-require '../../login/info.pl';
-require '../../login/aes.pl';
+require '../library/info.pl';
+require '../library/aes.pl';
 my $q=new CGI;
 my $con = DBI->connect( GetDB(), GetID(), GetPW() );
 

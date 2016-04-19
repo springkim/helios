@@ -5,7 +5,7 @@ use CGI;
 use DBI;
 use feature 'say';
 use Crypt::Salt;
-require '../../login/info.pl';
+require '../library/info.pl';
 my $q=new CGI;
 my $id=$q->param('ID');
 print $q->header(-charset=>"UTF-8");

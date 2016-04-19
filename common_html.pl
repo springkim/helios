@@ -29,14 +29,34 @@ my $board_page="http://www.youtube.com";
 my $knowledge_page="http://www.daum.net";
 
 my $mobile_title="Helios";
-sub print_header($){
-	my $is_login=shift;
+sub print_header($$){
+	my $id=shift;
 	my $href=$login_page;
 	my $text="Log In";
-	if($is_login){
+	if($id){
 		$text="Log Out";
 		$href=$logout_page;
 	}
+	my $admin_html='';
+	if(is_admin($id)>0){
+    	$admin_html='
+    	<li class="dropdown active"><a href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle"><span style="color:#A566FF">Admin&nbsp;<i class="caret"></i></span></a>
+              <ul class="dropdown-menu">
+                <li><span style="color:#FFB2D9">&nbsp;&nbsp;For admin</span></li>
+                <li role="separator" class="divider"></li>
+                <li><a href="admin_new_problem.pl"><span style="color:#A566FF">Problem Insert</span></a></li>
+                <li><a href="admin_view_submit.pl"><span style="color:#A566FF">All Submits</span></a></li>
+                <li role="separator" class="divider"></li>
+                <li><span style="color:#FFB2D9">&nbsp;&nbsp;For superadmin</span></li>
+                <li role="separator" class="divider"></li>
+             ';
+       if(is_admin($id)==2){
+    		$admin_html.='<li><a href="admin_erase_problem.pl"><span style="color:#A566FF">Problem Erase</span></a></li>';
+    		$admin_html.='';
+    	} 
+       $admin_html.=' </ul></li>';
+    }
+   
 	print <<EOF
 	<nav class="navbar navbar-static-top header-navbar">
         <div class="header-navbar-mobile">
@@ -76,8 +96,7 @@ sub print_header($){
             </li>
             <li><a href="$submit_page"><span>Submit Result</span></a></li>
             <li><a href="$ranking_page"><span>Ranking</span></a></li>
-            <li><a href="$knowledge_page"><span>Knowledge</span></a></li>
-            
+             $admin_html
           </ul>
           <ul class="userbar nav navbar-nav">
             <li class="dropdown"><a href="" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" class="userbar__settings dropdown-toggle"><i class="fa fa-power-off"></i></a>
@@ -250,6 +269,7 @@ sub print_sidemenu($){
               	<div data-css=\"css/right.dark.css\" title=\"Dark\" class=\"demo__theme $theme_active[0] demo__theme_dark\"></div>
               	<div data-css=\"css/right.lilac.css\" title=\"Lilac\" class=\"demo__theme $theme_active[1] demo__theme_lilac\"></div>
             	  </div>";
+   
 	print <<EOF
 	<div style="display:none">
 	<form method="post">
@@ -284,7 +304,7 @@ sub print_sidemenu($){
                 <div class="sidebar__title">User Menu</div>
                 <ul class="nav nav-menu">
                   <li><a href="$side_menu_href[0][0]">
-                      <div class="nav-menu__ico"><i class="fa fa-fw fa-star"></i></div>
+                      <div class="nav-menu__ico"><i class="fa fa-fw fa-dashboard"></i></div>
                       <div class="nav-menu__text"><span>$side_menu[0][0]</span></div></a></li>          
                  
                   
@@ -295,15 +315,10 @@ sub print_sidemenu($){
                   <li><a href="$side_menu_href[3][0]">
                       <div class="nav-menu__ico"><i class="fa fa-fw fa-user"></i></div>
                       <div class="nav-menu__text"><span>$side_menu[3][0]</span></div></a></li>
-                      
-                  <li ><a href="#">
-                      <div class="nav-menu__ico"><i class="fa fa-fw fa-folder-o"></i></div>
-                      <div class="nav-menu__text"><span>Favorite</span></div>
-                      <div class="nav-menu__right"><i class="fa fa-fw fa-angle-right arrow"></i></div></a>
-                    <ul class="nav nav-menu__second collapse in">
-                      $favorite_link
-                    </ul>
-                  </li>
+                  <li><a href="notice.pl">
+                      <div class="nav-menu__ico"><i class="fa fa-fw fa-bookmark"></i></div>
+                      <div class="nav-menu__text"><span>Notice</span></div></a></li>
+                  
                 </ul>
                 
                 <div class="sidebar__title">Page</div>

@@ -15,8 +15,8 @@ use feature 'say';
 use Digest::SHA3 qw(sha3_512_hex);
 use Crypt::Salt;
 
-require '../../login/aes.pl';  #must be require before info.pl
-require '../../login/info.pl';
+require '../library/aes.pl';  #must be require before info.pl
+require '../library/info.pl';
 my $q=new CGI;
 
 my $id=$q->param('ID');
@@ -80,7 +80,7 @@ my $str='
            <div class="form-group has-feedback" id="ID_EDITBOX">
                       <label class="control-label">Your best id</label>
                       <div class="form-group" >
-                      	<input style="width:75%;display:inline" type="text"  id="ID" name="ID" maxlength="64" class="form-control">
+                      	<input style="width:75%;display:inline" type="text"  id="ID" name="ID" maxlength=32" class="form-control">
                       	
                       	<div class="template template__modals" style="display:inline"><div class="template__modal" style="display:inline">
                                 
@@ -95,17 +95,17 @@ my $str='
 			
            <div class="form-group  has-feedback" id="PW_EDITBOX">
                       <label class="control-label">Safety password</label>
-                      <div class="form-group"><input type="password"  id="PW" name="PW" maxlength="64" class="form-control"></div>
+                      <div class="form-group"><input type="password"  id="PW" name="PW" maxlength="32" class="form-control"></div>
                       <span class="glyphicon form-control-feedback"></span>
 			</div>
 			<div class="form-group  has-feedback" id="CPW_EDITBOX">
                       <label class="control-label">Confirm password</label>
-                      <div class="form-group"><input type="password"  id="CPW" name="CPW" maxlength="64" class="form-control"></div>
+                      <div class="form-group"><input type="password"  id="CPW" name="CPW" maxlength="32" class="form-control"></div>
                       <span class="glyphicon form-control-feedback"></span>
 			</div>
 			<div class="form-group  has-feedback" id="NAME_EDITBOX">
                       <label class="control-label">Your name</label>
-                      <div class="form-group"><input type="text"  id="NAME" name="NAME" maxlength="64" class="form-control"></div>
+                      <div class="form-group"><input type="text"  id="NAME" name="NAME" maxlength="32" class="form-control"></div>
                       <span class="glyphicon form-control-feedback"></span>
 			</div>
           <div class="form-group  has-feedback" id="EMAIL_EDITBOX">

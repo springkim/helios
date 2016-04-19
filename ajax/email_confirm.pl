@@ -4,8 +4,8 @@ use warnings;
 use CGI;
 use DBI;
 use MIME::Lite;
-require '../../login/info.pl';
-require '../../login/aes.pl';
+require '../library/info.pl';
+require '../library/aes.pl';
 my $q=new CGI;
 my $con = DBI->connect( GetDB(), GetID(), GetPW() );
 
@@ -22,7 +22,7 @@ if($id ne ''){
 	@row=$state->fetchrow_array;
 	$state->finish;
 	$salt=$row[0];
-	my $link="localhost/main/ajax/email_certification.pl?ID=$id&SALT=$salt";
+	my $link="localhost/ajax/email_certification.pl?ID=$id&SALT=$salt";
 	my $data='
 	반갑습니다. Helios는 E-Mail을 인증해야 문제를 풀 수 있습니다.
 	아래의 링크를 클릭하시면 자동으로 E-Mail인증이 완료 됩니다.

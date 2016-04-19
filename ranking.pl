@@ -40,13 +40,13 @@ print <<EOF
     <th>rank</th>
 	<th>id</th>
 	<th>Name</th>
-	<th>Rating</th>
+	<th>Elo Rating</th>
 	<th>Comment</th>
 </tr></thead><tfoot><tr>
 <th>rank</th>
 	<th>id</th>
 	<th>Name</th>
-	<th>Rating</th>
+	<th>Elo Rating</th>
 	<th>Comment</th>
 </tr></tfoot>
     <tbody>
@@ -67,22 +67,22 @@ while(my $row=$state->fetchrow_hashref){
 	my $crazy_solve;
 	my $elo;
 	my @row;
-	my $state2=$con->prepare("SELECT count(DISTINCT problem.pr_optnum) FROM userinfo_problem,problem WHERE userinfo_problem.pr_optnum=problem.pr_optnum and ui_id=\'$id\' and pr_level=\'easy\'");
+	my $state2=$con->prepare("SELECT count(DISTINCT problem.pr_optnum) FROM userinfo_problem NATURAL JOIN problem WHERE ui_id=\'$id\' and pr_level='easy' and uip_status='accepted'");
 	$state2->execute;
 	@row=$state2->fetchrow_array;
 	$easy_solve=$row[0];
 	$state2->finish;
-	$state2=$con->prepare("SELECT count(DISTINCT problem.pr_optnum) FROM userinfo_problem,problem WHERE userinfo_problem.pr_optnum=problem.pr_optnum and ui_id=\'$id\' and pr_level=\'normal\'");
+	$state2=$con->prepare("SELECT count(DISTINCT problem.pr_optnum) FROM userinfo_problem NATURAL JOIN problem WHERE ui_id=\'$id\' and pr_level='normal' and uip_status='accepted'");
 	$state2->execute;
 	@row=$state2->fetchrow_array;
 	$normal_solve=$row[0];
 	$state2->finish;
-	$state2=$con->prepare("SELECT count(DISTINCT problem.pr_optnum) FROM userinfo_problem,problem WHERE userinfo_problem.pr_optnum=problem.pr_optnum and ui_id=\'$id\' and pr_level=\'hard\'");
+	$state2=$con->prepare("SELECT count(DISTINCT problem.pr_optnum) FROM userinfo_problem NATURAL JOIN problem WHERE ui_id=\'$id\' and pr_level='hard' and uip_status='accepted'");
 	$state2->execute;
 	@row=$state2->fetchrow_array;
 	$hard_solve=$row[0];
 	$state2->finish;
-	$state2=$con->prepare("SELECT count(DISTINCT problem.pr_optnum) FROM userinfo_problem,problem WHERE userinfo_problem.pr_optnum=problem.pr_optnum and ui_id=\'$id\' and pr_level=\'crazy\'");
+	$state2=$con->prepare("SELECT count(DISTINCT problem.pr_optnum) FROM userinfo_problem NATURAL JOIN problem WHERE ui_id=\'$id\' and pr_level='crazy' and uip_status='accepted'");
 	$state2->execute;
 	@row=$state2->fetchrow_array;
 	$crazy_solve=$row[0];
@@ -107,14 +107,6 @@ foreach my $i(1..$#array+1){
 }
 
 
-#        <tr>
-#            <td>Tiger Nixon</td>
-#            <td>System Architect</td>
-#            <td>Edinburgh</td>
-#            <td>61</td>
-#            <td>2011/04/25</td>
-#            <td>$320,800</td>
-#        </tr>
  print '</tbody></table></div></div></div></div></div></div></div></div></div></div></div></div>';
 ##################################################################################
 print '</div></div></div>';
