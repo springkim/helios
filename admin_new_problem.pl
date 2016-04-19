@@ -281,6 +281,9 @@ $(document).ready(function(){
 	$("#mfile3").change(function(){
 		$("#mfile2").val($("#mfile3").val());
 	})
+	$("#title").keyup(function(){
+		$("#title").val($("#title").val().replace(/[^a-z|A-Z|ㄱ-ㅎ|ㅏ-ㅣ|가-힣| ]+/g,""));
+	})
 });
 </script>';
 
