@@ -25,7 +25,7 @@ my $problem_page="";
 my $contest_page="http://www.naver.com";
 my $submit_page="submit.pl";
 my $ranking_page="ranking.pl";
-my $board_page="http://www.youtube.com";
+my $board_page="board.pl";
 my $knowledge_page="http://www.daum.net";
 
 my $mobile_title="Helios";
@@ -46,13 +46,15 @@ sub print_header($$){
                 <li role="separator" class="divider"></li>
                 <li><a href="admin_new_problem.pl"><span style="color:#A566FF">Problem Insert</span></a></li>
                 <li><a href="admin_view_submit.pl"><span style="color:#A566FF">All Submits</span></a></li>
+                <li><a href="admin_new_notice.pl"><span style="color:#A566FF">Notice Insert</span></a></li>
                 <li role="separator" class="divider"></li>
                 <li><span style="color:#FFB2D9">&nbsp;&nbsp;For superadmin</span></li>
                 <li role="separator" class="divider"></li>
              ';
        if(is_admin($id)==2){
     		$admin_html.='<li><a href="admin_erase_problem.pl"><span style="color:#A566FF">Problem Erase</span></a></li>';
-    		$admin_html.='';
+    		$admin_html.='<li><a href="admin_erase_notice.pl"><span style="color:#A566FF">Notice Erase</span></a></li>';
+    		$admin_html.='<li><a href="admin_user_manage.pl"><span style="color:#A566FF">User Manage</span></a></li>';
     	} 
        $admin_html.=' </ul></li>';
     }
@@ -350,9 +352,7 @@ sub print_sidemenu($){
                   <li><a href="$board_page">
                       <div class="nav-menu__ico"><i class="fa fa-fw fa-dashboard"></i></div>
                       <div class="nav-menu__text"><span>Board</span></div></a></li>
-                  <li><a href="$knowledge_page">
-                      <div class="nav-menu__ico"><i class="fa fa-fw fa-pencil"></i></div>
-                      <div class="nav-menu__text"><span>Knowledge</span></div></a></li>
+               
                   
                   <li><a href="#">
                       <div class="nav-menu__ico"><i class="fa fa-fw fa-columns"></i></div>

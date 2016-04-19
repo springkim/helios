@@ -8,7 +8,7 @@ my $file_str="";
 my $database_table;
 if($<!=0){print "you must execute in sudo\n";die;}
 system "service apache2 stop";
-system "./photo_upload.pl";
+#system "./photo_upload.pl";
 sub print_header() {
 	$file_str=$file_str.'#!/usr/bin/perl' . "\n";
 	$file_str=$file_str.'use strict;' . "\n";
@@ -35,6 +35,7 @@ sub execute($$) {
 		$file_str=$file_str.'$con->do("INSERT INTO ' . $table . " VALUES(";
 		my $str = "";
 		foreach my $i (@row) {
+			$i=~s/'/\'\'/g;
 			$str = $str . "\'" . $i . "\',";
 		}
 		chop $str;
@@ -176,5 +177,5 @@ SaveDatabase();
 print_end;
 print__data__;
 
-SaveFile();
+#SaveFile();
 system "service apache2 start";

@@ -13,7 +13,7 @@ sub print_notice(){
 	my $notice_href="main.pl";
 	my $notice_list='';
 	my $con = DBI->connect( GetDB(), GetID(), GetPW() );
-	my $state=$con->prepare("SELECT * FROM notice ORDER BY nt_optday DESC");
+	my $state=$con->prepare("SELECT * FROM notice ORDER BY nt_optnum DESC");
 	$state->execute;
 	my $i=0;
 	while(my $row=$state->fetchrow_hashref){

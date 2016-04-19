@@ -14,25 +14,28 @@ my $con = DBI->connect( GetDB(), GetID(), GetPW() );
 my $c_id=GetCookieId($q);
 my $redirect_script='';
 if(is_admin($c_id)==2){
-	my $pnum=$q->param('PNUM');
-	if($pnum ne ''){
-		my $state=$con->prepare("SELECT pr_group,pr_title FROM problem WHERE pr_optnum='$pnum'");
-		$state->execute;
-		my $row=$state->fetchrow_hashref;
-		$state->finish;
-		my $title=$row->{pr_title};
-		$title=~s/ /\\ /g;
-		system "rm -r problem_repository/$row->{pr_group}/$title";
-		$con->do("DELETE FROM userinfo_problem WHERE pr_optnum='$pnum'");
-		$con->do("DELETE FROM problem WHERE pr_optnum='$pnum'");
+	my $take=$q->param('TAKE');
+	my $uid=$q->param('ID');
+	if($take ne '' and $uid ne ''){
+		if($take eq 'change'){
+			if(is_admin($uid)>0){
+				$con->do("DELETE FROM admin WHERE ui_id='$uid'");	
+			}else{
+				$con->do("INSERT INTO admin VALUES('$uid')");
+			}
+		}elsif($take eq 'ban'){
+				$con->do("DELETE FROM userlog WHERE ui_id='$uid'");
+				$con->do("DELETE FROM userinfo_problem WHERE ui_id='$uid'");
+				$con->do("DELETE FROM userinfo WHERE ui_id='$uid'");
+		}
 		$redirect_script='<script type="text/javascript">
-			location.replace("admin_erase_problem.pl");
-			location.href("admin_erase_problem.pl");
+			location.replace("admin_user_manage.pl");
+			location.href("admin_user_manage.pl");
 			history.go(-1);
 			location.reload();
 		</script>';
-		
 	}
+	
 #==============================WRITE PERL CGI==============================
 print $q->header(-charset=>"UTF-8");
 print helios_html_head($q,$c_id,$redirect_script);
@@ -49,69 +52,66 @@ print <<EOF
 <div class="main"><div class="main__scroll scrollbar-macosx"><div class="main__cont">
 <div class="main-heading"><div class="main-title"><ol class="breadcrumb">
 	<li><a href="problem_list.pl?show_type=all">SuperAdmin</a></li>
-	<li class="active">Erase Problem</li>
+	<li class="active">Erase Notice</li>
 </ol></div><div class="main-filter">
 	
 </div></div><div class="container-fluid half-padding"><div class="template template__table_data">
 <div class="row"><div class="col-md-12"><div class="panel panel-danger"><div class="panel-heading">
-	<h3 class="panel-title">Problem list</h3>
+	<h3 class="panel-title">Notice list</h3>
 </div>
 
 <div class="row"><div class="panel-body">
 <div role="alert" class="alert alert-success alert-dismissible">
 <button type="button" data-dismiss="alert" aria-label="Close" class="close"><span aria-hidden="true">&times;</span></button>
-<i class="alert-ico fa fa-fw fa-check"></i><strong>Warn!&thinsp;</strong> if you click problem title, then problem is deleted.
+<i class="alert-ico fa fa-fw fa-check"></i><strong>Warn!&thinsp;</strong> change class and ban user.
 </div>
 </div></div>
 
 <div class="panel-body"><div class="container-fluid half-padding"><div id="buttons"></div><table id="example" class="table datatable display table-hover" cellspacing="0" width="100%">
 <thead><tr>
-	<th>Number</th>
-	<th>Title</th>
-	<th>level</th>
-	<th>Try</th>
-	<th>Success</th>
-	<th>Rate</th>
+	<th>User id</th>
+	<th>Name</th>
+	<th>E-mail</th>
+	<th>comment</th>
+	<th>Change class</th>
+	<th>Ban</th>
 </tr></thead><tfoot><tr>
-	<th>Number</th>
-	<th>Title</th>
-	<th>level</th>
-	<th>Try</th>
-	<th>Success</th>
-	<th>Rate</th>
+	<th>User id</th>
+	<th>Name</th>
+	<th>E-mail</th>
+	<th>comment</th>
+	<th>Change class</th>
+	<th>Ban</th>
 </tr></tfoot>
     <tbody>
 EOF
 ;
-my $query="SELECT * FROM problem ";
+my $query="SELECT * FROM userinfo WHERE ui_id<>'root'";
 my $state=$con->prepare($query);
 $state->execute;
 while(my $row=$state->fetchrow_hashref){
-	my $num=$row->{pr_optnum};
-	my $title=$row->{pr_title};
-	my $level=$row->{pr_level};
-	my $state2=$con->prepare("SELECT count(DISTINCT ui_id) FROM userinfo_problem WHERE pr_optnum=\'$num\'");
-	$state2->execute;
-	my @row=$state2->fetchrow_array;
-	$state2->finish;
-	my $try=$row[0];
-	$state2=$con->prepare("SELECT count(DISTINCT ui_id) FROM userinfo_problem WHERE pr_optnum=\'$num\' and uip_status=\'accepted\'");
-	$state2->execute;
-	@row=$state2->fetchrow_array;
-	$state2->finish;
-	my $success=$row[0];
-	my $rate='0%';
-	if($try!=0){
-		$rate=($success/$try)*100;
-		$rate.='%';
+	my $name=$row->{ui_name};
+	my $id=$row->{ui_id};
+	my $email=$row->{ui_email};
+	my $comment=$row->{ui_comment};
+	if(length($comment)>25){
+		$comment=substr($comment,0,25);
+	}
+	my $a_str='';
+	my $strong_color='';
+	if(is_admin($id)==0){	#normal user
+		$a_str='To Admin';
+	}else{						#admin
+		$a_str='To NormalUser';
+		$strong_color='style="color:#6799FF"'
 	}
 	print "<tr>
-	<td>$num</td>
-	<td><a href='admin_erase_problem.pl?PNUM=$num'><strong style=\"color:#F361DC;\">$title</strong></a></td>
-	<td>$level</td>
-	<td>$try</td>
-	<td>$success</td>
-	<td>$rate</td>
+	<td><strong $strong_color>$id</strong></td>
+	<td>$name</td>
+	<td>$email</td>
+	<td>$comment</td>
+	<td><a href='admin_user_manage.pl?TAKE=change&ID=$id'><strong style=\"color:#86E57F\">$a_str</strong></a></td>
+	<td><a href='admin_user_manage.pl?TAKE=ban&ID=$id'><strong style=\"color:#F15F5F\">BAN!!</strong></a></td>
 	</tr>";	
 }
  print '</tbody></table></div></div></div></div></div></div></div></div></div></div></div></div>';

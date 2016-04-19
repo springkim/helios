@@ -73,7 +73,7 @@ $submit_block='<div class="col-md-12">
                               <label class="col-sm-2 control-label">Create</label>
                               <div class="col-sm-10">
                               	  <input type="hidden" id="PNUM" name="PNUM" value="'.$pnum.'"></input>
-                                 <button type="submit" id="submit" class="btn btn-default">Insert new problem</button>
+                                 <button type="submit" id="submit" class="btn btn-default">Submit</button>
                               </div>
                             </div>
                           </div>

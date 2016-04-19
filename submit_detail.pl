@@ -16,8 +16,14 @@ my $c_id=GetCookieId($q);
 
 my $src_id=$q->param("SRCID");
 my $src_path=$q->param("SRCPATH");
-
-if($src_id ne '' and $c_id ne ''and  $src_id eq $c_id){
+my $state=$con->prepare("SELECT count(uip_srcpath) FROM userinfo_problem WHERE ui_id=\'$c_id\' and uip_srcpath='$src_path'");
+$state->execute;
+my @row=$state->fetchrow_array;
+$state->finish;
+if(is_admin($c_id)>0){
+	$row[0]=1;	
+}
+if($src_id ne '' and $c_id ne ''and  $src_id eq $c_id and $row[0]==1){
 
 #==============================WRITE PERL CGI==============================
 print $q->header(-charset=>"UTF-8");
@@ -44,6 +50,7 @@ $status.="<strong style=\"color:#cccccc\">Level : </strong>".$row2->{pr_level}."
 $status.="<strong style=\"color:#cccccc\">Time Limit : </strong>".$row2->{pr_timelimit}."<br>";
 $status.="<strong style=\"color:#cccccc\">Memory Limit : </strong>".$row2->{pr_memlimit}."<br><br>";
 
+$status.="<strong style=\"color:#cccccc\">User : </strong>".$row->{ui_id}."<br>";
 $status.="<strong style=\"color:#cccccc\">Language : </strong>".$row->{uip_language}."<br>";
 $status.="<strong style=\"color:#cccccc\">Time : </strong>".$row->{uip_time}."<br>";
 my $sta=$row->{uip_status};

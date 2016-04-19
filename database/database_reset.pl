@@ -32,7 +32,6 @@ open(TEXT,"<table.txt") || die $!;
 $/=undef;
 my $data=<TEXT>;
 DropTable($data);
-DeleteUserPhoto();
 CreateTable($data);
 close(TEXT);
 #================================================================================

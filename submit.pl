@@ -18,7 +18,7 @@ my $pnum=$q->param("PNUM");
 my $language=$q->param("lang");
 my $src_file=$q->param("SFILE");
 
-
+my $redirect_script='';
 if($pnum ne '' and $language ne ''and  $src_file ne ''){
 	my $date=GetLocalTime();
 	$src_file =~ m<.+\.(\w+)?$>;    #확장자를 추출합니다.
@@ -32,10 +32,16 @@ if($pnum ne '' and $language ne ''and  $src_file ne ''){
 	my $query="INSERT INTO userinfo_problem VALUES($pnum,\'$c_id\',\'$language\',\'0\',\'wait\',\'$date\',\'user_source/$filename\')";
 	#print FP $pnum," ",$language," ",$src_file,"\n",$query;
 	$con->do($query);
+	$redirect_script='<script type="text/javascript">
+			location.replace("submit.pl");
+			location.href("submit.pl");
+			history.go(-1);
+			location.reload();
+		</script>';
 }
 #==============================WRITE PERL CGI==============================
 print $q->header(-charset=>"UTF-8");
-print helios_html_head($q,$c_id);
+print helios_html_head($q,$c_id,$redirect_script);
 print '<body class="framed main-scrollable"><div class="wrapper">';
 
 print_header($c_id);

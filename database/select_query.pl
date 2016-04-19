@@ -24,9 +24,10 @@ my $elem='easy';
 
 #execute("SELECT count(DISTINCT problem.pr_optnum) FROM userinfo_problem NATURAL JOIN problem WHERE pr_level=\'$elem\' and ui_id=\'$id\' and uip_status=\'accepted\'");
 #execute("SELECT * FROM userinfo");
-#execute("SELECT * FROM nonemail_certification");
+execute("SELECT * FROM userinfo_problem ORDER BY uip_date DESC");
 #execute("SELECT * FROM userlog");
-execute("SELECT pr_title FROM problem");
+#execute("SELECT pr_title FROM problem");
+#execute("SELECT * FROM notice");
 #execute("SELECT * FROM userinfo_problem");
 #execute("SELECT count(DISTINCT problem.pr_optnum) FROM userinfo_problem NATURAL JOIN problem WHERE ui_id='root' AND uip_status='accepted' AND pr_level='easy'");
 #execute("SELECT * FROM notice ORDER BY nt_date DESC");

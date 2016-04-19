@@ -78,7 +78,7 @@ my $q=new CGI;
 my $con = DBI->connect( GetDB(), GetID(), GetPW() );
 my $c_id=GetCookieId($q);
 if($c_id eq ''){
-	print $q->redirect('main.pl');
+	print $q->redirect('login/login.pl');
 }
 #==============================WRITE PERL CGI==============================
 print $q->header(-charset=>"UTF-8");

@@ -10,18 +10,18 @@ create table userinfo(
 	ui_visit int
 );
 create table nonemail_certification(
-	ui_id varchar(512) references userinfo(ui_id),
+	ui_id varchar(48) references userinfo(ui_id),
 	nec_str varchar(512)
 );
 create table admin(
-	ui_id varchar(512) references userinfo(ui_id)
+	ui_id varchar(48) references userinfo(ui_id)
 );
 create table superadmin(
-	ui_id varchar(512) references userinfo(ui_id)
+	ui_id varchar(48) references userinfo(ui_id)
 );
 create table friend(
-	ui_id1 varchar(512) references userinfo(ui_id),
-	ui_id2 varchar(512) references userinfo(ui_id)
+	ui_id1 varchar(48) references userinfo(ui_id),
+	ui_id2 varchar(48) references userinfo(ui_id)
 );
 create table problem(
 	pr_optnum serial primary key,
@@ -35,7 +35,7 @@ create table problem(
 );
 create table userinfo_problem(
 	pr_optnum serial references problem(pr_optnum),
-	ui_id varchar(512) references userinfo(ui_id),
+	ui_id varchar(48) references userinfo(ui_id),
 	uip_language varchar(512),
 	uip_time varchar(512),
 	uip_status text,
@@ -44,40 +44,28 @@ create table userinfo_problem(
 	primary key(uip_srcpath,uip_date)
 );
 create table userlog(
-	ui_id varchar(512) references userinfo(ui_id),
+	ui_id varchar(48) references userinfo(ui_id),
 	ul_date varchar(512),
 	ul_ip varchar(512),
 	ul_env varchar(512)
 );
 create table notice(
-	nt_optday serial primary key,
+	nt_optnum serial primary key,
+	ui_id varchar(48) references userinfo(ui_id), 
 	nt_date varchar(512),
 	nt_title text,
 	nt_content text
 );
-create table question(
-	ui_id varchar(512) references userinfo(ui_id),
-	qe_title text primary key,
-	qe_content text,
-	qe_date varchar(512),
-	qe_watch boolean,
-	qe_answer text
+create table board(
+	bd_optnum serial primary key,
+	ui_id varchar(48) references userinfo(ui_id),
+	bd_date varchar(512),
+	bd_title varchar(256),
+	bd_content text,
+	bd_type varchar(512)
 );
-create table favorite(
-	ui_id varchar(512) references userinfo(ui_id),
-	fa_title varchar(512),
-	fa_link text
-);
-create table userdateinfo(
-	ui_id varchar(512) references userinfo(ui_id),
-	udi_optday int,
-	udi_visit int,
-	udi_solve int,
-	udi_rank int,
-	primary key(ui_id,udi_optday)
-);
-create table language_status(
-	ls_optday serial primary key,
-	ls_date varchar(512),
-	ls_language text
+create table board_comment(
+	bd_optnum serial references board(bd_optnum),
+	ui_id varchar(48) references userinfo(ui_id),
+	bd_comment varchar(512)
 );
