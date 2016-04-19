@@ -17,6 +17,9 @@ if($id ne ""){
 	if($id eq ($id+0)){
 		$row[0]=1;
 	}
+	if($id eq 'ajax' or $id eq 'css' or $id eq 'data' or $id eq 'database' or $id eq 'img' or $id eq 'js' or $id eq 'library' or $id eq 'libs' or $id eq 'login' or $id eq 'problem_repository' or $id eq 'styles' or $id eq 'user_source' or $id eq 'yonsei' or $id eq 'html'){
+		$row[0]=1;
+	}      
 	print $row[0];
 	$con->disconnect;
 }else{

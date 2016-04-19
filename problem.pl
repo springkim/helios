@@ -102,8 +102,8 @@ $(document).ready(function(){
                               </div>
                               <div class="panel-body">
                                 <p>
-                                	이메일 인증은 대시보드 좌측 메뉴의 User에서 인증 받을수 있습니다.<br>
-                                	인증을 하지 않으면 문제를 풀 수 없습니다.
+                                	Please certification your e-mail<br>
+                                	Then you solve the problems.
                                 </p>
                               </div>
                             </div>
