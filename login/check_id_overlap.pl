@@ -14,6 +14,9 @@ if($id ne ""){
 	$state->execute;
 	
 	my @row=$state->fetchrow_array;
+	if($id eq ($id+0)){
+		$row[0]=1;
+	}
 	print $row[0];
 	$con->disconnect;
 }else{

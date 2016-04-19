@@ -31,7 +31,7 @@ if(isAdmin($c_id)){
 		if($row[0]==0){
 				my $path="problem_repository/$class/$title";
 				mkdir $path;
-				chmod 0777,$path;
+				chmod 0733,$path;
 				$content=~s/'/''/g;	#데이터 베이스에 '를 삽입하려면 ''를  써야한다.
 				open FP,'>',"$path/problem";
 				print FP $title,"\n";
